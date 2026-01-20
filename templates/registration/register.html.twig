@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - All4Sport{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <svg class="logo-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="25" cy="25" r="23" fill="#FF6B35" stroke="#fff" stroke-width="2"/>
+                    <path d="M15 25 L25 15 L35 25 L25 35 Z" fill="#fff"/>
+                    <circle cx="25" cy="25" r="5" fill="#FF6B35"/>
+                </svg>
+                <span class="auth-logo-text">All<span class="highlight">4</span>Sport</span>
+            </div>
+            <h1>Rejoignez-nous !</h1>
+            <p>Créez votre compte et profitez de nos offres exclusives</p>
+        </div>
+
+        {% if registrationForm.vars.errors|length > 0 %}
+            <div class="alert alert-error">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                {{ form_errors(registrationForm) }}
+            </div>
+        {% endif %}
+
+        {{ form_start(registrationForm, {'attr': {'class': 'auth-form'}}) }}
+
+            <div class="form-group">
+                <label for="{{ registrationForm.email.vars.id }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Email
+                </label>
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'votreemail@exemple.com'}}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ registrationForm.plainPassword.vars.id }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Mot de passe
+                </label>
+                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Minimum 6 caractères'}}) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    <span>J'accepte les <a href="#" target="_blank">conditions générales</a> et la <a href="#" target="_blank">politique de confidentialité</a></span>
+                </label>
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+                Créer mon compte
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+            </button>
+        {{ form_end(registrationForm) }}
+
+        <div class="auth-footer">
+            <p>Vous avez déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+        </div>
+
+        <div class="auth-benefits">
+            <h3>Pourquoi nous rejoindre ?</h3>
+            <ul>
+                <li>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Offres exclusives et promotions
+                </li>
+                <li>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Livraison gratuite dès 50€
+                </li>
+                <li>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Suivi de commande en temps réel
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
