@@ -40,8 +40,8 @@ pour les trouvers ils sont dans l'accueil et se mettent dans le fichier base
 
 
 # Commande utilisées:
-Symfony new /chemin du projet/ --Webapp
+- Symfony new /chemin du projet/ --Webapp
 cette commande est utile pour creer le projet.
 
-symfony serve
+- symfony serve
 pour lancer le serveur web.
