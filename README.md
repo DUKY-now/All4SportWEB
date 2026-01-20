@@ -92,5 +92,3 @@ Création des pages:
 - panier: Télio
 - Mes infos: Stéphane
 Création de la BDD: Théo
-=======
->>>>>>> c2397bd43b0366ae0022eb55bef9e6916295caf6
