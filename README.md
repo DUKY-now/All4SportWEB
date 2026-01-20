@@ -24,7 +24,7 @@ ETRE_STOCKE, 1N PRODUIT, 0N STOCK
 :
 CLIENT: id_client, nom, prenom, email, mot_de_passe, telephone, date_inscription
 PASSER, 1N CLIENT, 0N COMMANDE: 
-RAYON: id_rayon, nom_rayon, description
+RAYON: ²id_rayon, nom_rayon, description
 POSSEDER, 11 RAYON, 1N PRODUIT
 STOCK: id_stock, lieu_stockage, quantite_disponible
 <img width="1170" height="722" alt="image" src="https://github.com/user-attachments/assets/0e0a7b0c-c927-4901-917b-ad59cb8f3591" />
