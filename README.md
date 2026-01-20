@@ -11,6 +11,13 @@ Stéphane: Rédaction du Readme
 Théo: 
 
 
+## Technologies utilisées
+- Communication et partage de documents: Discord, GitHub
+- Developpement: VSCode et Intellij
+- I.A: Chat GPT, Claude, Perplexity
+- Conception: Mocodo pour le MCD, Figma pour les visuels de début de projet
+- Organisation: Trello
+
 ## création d'un MCD avec MocodoOnline 
 
 le mcd a été réalisé grace au site MOCODO. Dont voici le lien:
