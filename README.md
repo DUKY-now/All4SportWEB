@@ -92,3 +92,4 @@ Création des pages:
 - panier: Télio
 - Mes infos: Stéphane
 Création de la BDD: Théo
+- client
