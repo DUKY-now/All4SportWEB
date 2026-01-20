@@ -62,9 +62,25 @@ Page a créer en priorité:
 - Produits( Afficahge des produits avec les categorie) et tout ce qui en découle
 - Stock (Gestion du stock) ( Fonctionalité d'achat de restock via prit du marché )
 
+Page annexes:
 - Trouvez un Magasin ( Recherche de magasin )
 - Suivis de Livraison( Pour client / personnels (  affichage différents) )
 - Avis ( Gestion des avis )
 - Panier ( Gestion du panier )
 - Meilleurs ventes ( Affichage des meilleurs ventes )
 - Promo / carte cadeaux ( Promotion et carte cadeaux )
+
+## Tâches réalisées
+06/01/2026:
+Lecture du cahier des charges
+Création du MCD
+
+13/01/2026:
+Correction et finalisation du MCD
+
+20/01/2026:
+Création du projet symfony 
+Création des pages:
+- panier: Télio
+- Mes infos: Stéphane
+Création de la BDD: Théo
