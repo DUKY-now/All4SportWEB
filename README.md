@@ -6,10 +6,18 @@ AP n°4
 ## Tâche données
 Télio: 
 
-Stéphane: Rédaction du Readme
+Stéphane: Rédaction du Readme, Gestion du Trello
 
 Théo: 
 
+
+## Technologies utilisées
+- Communication et partage de documents: Discord, GitHub
+- Developpement: VSCode et Intellij
+- I.A: Chat GPT, Claude, Perplexity
+- Conception: Mocodo pour le MCD, Figma pour les visuels de début de projet
+- Organisation: Trello 
+<link src="https://trello.com/b/0E0QqSeB/all4sportweb">
 
 ## création d'un MCD avec MocodoOnline 
 
