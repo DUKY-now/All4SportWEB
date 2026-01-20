@@ -1,22 +1,246 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}All4Sport - Accueil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<!-- Header / Navigation -->
+<header class="header">
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="25" cy="25" r="23" fill="#FF6B35" stroke="#fff" stroke-width="2"/>
+                    <path d="M15 25 L25 15 L35 25 L25 35 Z" fill="#fff"/>
+                    <circle cx="25" cy="25" r="5" fill="#FF6B35"/>
+                </svg>
+                <span class="logo-text">All<span class="logo-highlight">4</span>Sport</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link active">Accueil</a></li>
+                <li><a href="#" class="nav-link">Produits</a></li>
+                <li><a href="#" class="nav-link">Magasins</a></li>
+                <li><a href="#" class="nav-link">Promotions</a></li>
+                <li><a href="#" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+                <button class="btn-icon cart-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</header>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Dépassez vos limites avec <span class="highlight">All4Sport</span></h1>
+        <p class="hero-subtitle">Équipements sportifs de qualité pour tous les athlètes, du débutant au professionnel</p>
+        <div class="hero-buttons">
+            <a href="#" class="btn btn-primary">Découvrir nos produits</a>
+            <a href="#" class="btn btn-secondary">Nos promotions</a>
+        </div>
+    </div>
+    <div class="hero-image">
+        <div class="hero-badge">
+            <span class="badge-icon">🏆</span>
+            <div class="badge-text">
+                <strong>N°1</strong>
+                <span>en France</span>
+            </div>
+        </div>
+    </div>
+</section>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/DELL/Desktop/All4SportWeb/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/DELL/Desktop/All4SportWeb/templates/home/index.html.twig</code></li>
-        <li>Rendered at {{ 'now'|date('r') }}</li>
-        <h1>Page D'accueil</h1>
-    </ul>
-</div>
+<!-- Categories Section -->
+<section class="categories">
+    <div class="container">
+        <h2 class="section-title">Nos Catégories</h2>
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-icon">⚽</div>
+                <h3>Football</h3>
+                <p>Équipements et accessoires</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🏀</div>
+                <h3>Basketball</h3>
+                <p>Ballons et chaussures</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🎾</div>
+                <h3>Tennis</h3>
+                <p>Raquettes et tenues</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🏋️</div>
+                <h3>Fitness</h3>
+                <p>Musculation et cardio</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🏃</div>
+                <h3>Running</h3>
+                <p>Chaussures et textiles</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🚴</div>
+                <h3>Cyclisme</h3>
+                <p>Vélos et équipements</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-products">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Meilleures Ventes</h2>
+            <a href="#" class="view-all">Voir tout →</a>
+        </div>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-badge">Nouveau</div>
+                <div class="product-image">
+                    <div class="placeholder-img">🎽</div>
+                </div>
+                <h3 class="product-name">Maillot Performance Pro</h3>
+                <p class="product-price"><span class="old-price">89.99€</span> 69.99€</p>
+                <button class="btn-add-cart">Ajouter au panier</button>
+            </div>
+            <div class="product-card">
+                <div class="product-badge promo">-30%</div>
+                <div class="product-image">
+                    <div class="placeholder-img">👟</div>
+                </div>
+                <h3 class="product-name">Chaussures Running Elite</h3>
+                <p class="product-price"><span class="old-price">149.99€</span> 104.99€</p>
+                <button class="btn-add-cart">Ajouter au panier</button>
+            </div>
+            <div class="product-card">
+                <div class="product-badge bestseller">Top vente</div>
+                <div class="product-image">
+                    <div class="placeholder-img">⚽</div>
+                </div>
+                <h3 class="product-name">Ballon Match Pro</h3>
+                <p class="product-price">39.99€</p>
+                <button class="btn-add-cart">Ajouter au panier</button>
+            </div>
+            <div class="product-card">
+                <div class="product-image">
+                    <div class="placeholder-img">🎒</div>
+                </div>
+                <h3 class="product-name">Sac de Sport Premium</h3>
+                <p class="product-price">54.99€</p>
+                <button class="btn-add-cart">Ajouter au panier</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🚚</div>
+                <h3>Livraison Gratuite</h3>
+                <p>Dès 50€ d'achat</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <h3>Retour 30 jours</h3>
+                <p>Satisfait ou remboursé</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💳</div>
+                <h3>Paiement Sécurisé</h3>
+                <p>100% sécurisé</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎁</div>
+                <h3>Cartes Cadeaux</h3>
+                <p>Offrez du sport</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter">
+    <div class="container">
+        <h2>Restez informé de nos nouveautés</h2>
+        <p>Inscrivez-vous à notre newsletter et recevez 10% sur votre première commande</p>
+        <form class="newsletter-form">
+            <input type="email" placeholder="Votre adresse email" class="newsletter-input">
+            <button type="submit" class="btn btn-primary">S'inscrire</button>
+        </form>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <svg class="logo-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="25" cy="25" r="23" fill="#FF6B35" stroke="#fff" stroke-width="2"/>
+                        <path d="M15 25 L25 15 L35 25 L25 35 Z" fill="#fff"/>
+                        <circle cx="25" cy="25" r="5" fill="#FF6B35"/>
+                    </svg>
+                    <span class="logo-text">All<span class="logo-highlight">4</span>Sport</span>
+                </div>
+                <p>Votre partenaire sportif depuis 2020</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#">Produits</a></li>
+                    <li><a href="#">Promotions</a></li>
+                    <li><a href="#">Magasins</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Service Client</h4>
+                <ul>
+                    <li><a href="#">Mon compte</a></li>
+                    <li><a href="#">Mes commandes</a></li>
+                    <li><a href="#">Livraison</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="#">À propos</a></li>
+                    <li><a href="#">CGV</a></li>
+                    <li><a href="#">Mentions légales</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 All4Sport. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
 {% endblock %}

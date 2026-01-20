@@ -1,5 +1,7 @@
 php bin/console make:controller // Création du controller Home (Page d'accueil)
 
+--Pour la DB
+php bin/console doctrine:database:create
 
 --------------------------------------------------------------------------
 Home ( Accueil)
@@ -16,3 +18,4 @@ Meilleurs ventes ( Affichage des meilleurs ventes )
 Promo / carte cadeaux ( Promotion et carte cadeaux )
 
 -----------------------------------------------------------------------------
+
