@@ -3,6 +3,13 @@
 Git pour le site internet d'All4Sport 
 AP n°4
 
+## Tâche données
+Télio: 
+
+Stéphane: Rédaction du Readme
+
+Théo: 
+
 
 ## création d'un MCD avec MocodoOnline 
 
@@ -42,3 +49,22 @@ cette commande est utile pour creer le projet.
 
 - symfony serve
 pour lancer le serveur web.
+
+- php bin/console make:controller
+Création du controller Home (Page d'accueil), et utilisée pour chaque page.
+
+
+## Page du site
+Page a créer en priorité:
+- Home ( Accueil)
+- GestionCommandsCollaborateur (Gérer l'état des commandes)
+- MesInfos ( Informations du client)
+- Produits( Afficahge des produits avec les categorie) et tout ce qui en découle
+- Stock (Gestion du stock) ( Fonctionalité d'achat de restock via prit du marché )
+
+- Trouvez un Magasin ( Recherche de magasin )
+- Suivis de Livraison( Pour client / personnels (  affichage différents) )
+- Avis ( Gestion des avis )
+- Panier ( Gestion du panier )
+- Meilleurs ventes ( Affichage des meilleurs ventes )
+- Promo / carte cadeaux ( Promotion et carte cadeaux )
