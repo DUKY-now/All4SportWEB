@@ -76,3 +76,21 @@ Page annexes:
 - Panier ( Gestion du panier )
 - Meilleurs ventes ( Affichage des meilleurs ventes )
 - Promo / carte cadeaux ( Promotion et carte cadeaux )
+<<<<<<< HEAD
+
+## Tâches réalisées
+06/01/2026:
+Lecture du cahier des charges
+Création du MCD
+
+13/01/2026:
+Correction et finalisation du MCD
+
+20/01/2026:
+Création du projet symfony 
+Création des pages:
+- panier: Télio
+- Mes infos: Stéphane
+Création de la BDD: Théo
+=======
+>>>>>>> c2397bd43b0366ae0022eb55bef9e6916295caf6
