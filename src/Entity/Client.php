@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -44,6 +46,38 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTime $dateInscription = null;
+
+    /**
+     * @var Collection<int, Adresse>
+     */
+    #[ORM\OneToMany(targetEntity: Adresse::class, mappedBy: 'client')]
+    private Collection $adresses;
+
+    /**
+     * @var Collection<int, Commande>
+     */
+    #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'client')]
+    private Collection $commandes;
+
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'client')]
+    private Collection $avis;
+
+    /**
+     * @var Collection<int, CarteCadeau>
+     */
+    #[ORM\OneToMany(targetEntity: CarteCadeau::class, mappedBy: 'client')]
+    private Collection $carteCadeaus;
+
+    public function __construct()
+    {
+        $this->adresses = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+        $this->carteCadeaus = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -170,6 +204,126 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateInscription(\DateTime $dateInscription): static
     {
         $this->dateInscription = $dateInscription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Adresse>
+     */
+    public function getAdresses(): Collection
+    {
+        return $this->adresses;
+    }
+
+    public function addAdress(Adresse $adress): static
+    {
+        if (!$this->adresses->contains($adress)) {
+            $this->adresses->add($adress);
+            $adress->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdress(Adresse $adress): static
+    {
+        if ($this->adresses->removeElement($adress)) {
+            // set the owning side to null (unless already changed)
+            if ($adress->getClient() === $this) {
+                $adress->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): static
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): static
+    {
+        if ($this->commandes->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getClient() === $this) {
+                $commande->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getClient() === $this) {
+                $avi->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CarteCadeau>
+     */
+    public function getCarteCadeaus(): Collection
+    {
+        return $this->carteCadeaus;
+    }
+
+    public function addCarteCadeau(CarteCadeau $carteCadeau): static
+    {
+        if (!$this->carteCadeaus->contains($carteCadeau)) {
+            $this->carteCadeaus->add($carteCadeau);
+            $carteCadeau->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCarteCadeau(CarteCadeau $carteCadeau): static
+    {
+        if ($this->carteCadeaus->removeElement($carteCadeau)) {
+            // set the owning side to null (unless already changed)
+            if ($carteCadeau->getClient() === $this) {
+                $carteCadeau->setClient(null);
+            }
+        }
 
         return $this;
     }

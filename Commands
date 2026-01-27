@@ -3,6 +3,21 @@ php bin/console make:controller // Création du controller Home (Page d'accueil)
 --Pour la DB
 php bin/console doctrine:database:create
 php bin/console make:user Client
+php bin/console make:entity Adresse
+php bin/console make:entity Categorie
+php bin/console make:entity Produit
+php bin/console make:entity Magasin
+php bin/console make:entity Stock
+php bin/console make:entity Commande
+php bin/console make:entity LigneCommande
+php bin/console make:entity Livraison
+php bin/console make:entity Avis
+php bin/console make:entity Panier
+php bin/console make:entity LignePanier
+php bin/console make:entity Promotion
+php bin/console make:entity CarteCadeau
+
+
 
 --Pour les formulaires
 php bin/console make:auth
