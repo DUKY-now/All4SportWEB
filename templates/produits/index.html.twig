@@ -1,0 +1,862 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Produits - All4Sport{% endblock %}
+
+{% block body %}
+<!-- Header avec navigation -->
+<header class="header" id="header">
+    <nav class="navbar">
+        <a href="{{ path('app_home') }}" class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            All4Sport
+        </a>
+
+        <ul class="nav-menu">
+            <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+            <li><a href="{{ path('app_produits') }}" class="nav-link">Produits</a></li>
+            <li><a href="#" class="nav-link">Promotions</a></li>
+            <li><a href="#" class="nav-link">Comptes</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+
+            <div class="cart-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span class="cart-badge">0</span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Section Hero pour les produits -->
+<section class="hero" style="padding: 3rem 2rem;">
+    <div class="hero-content">
+        <h1>Nos Produits</h1>
+        <p>Découvrez notre sélection d'équipements sportifs de qualité pour tous les athlètes</p>
+    </div>
+</section>
+
+<!-- Section Recherche et Filtres -->
+<section class="search-filter-section">
+    <div class="search-filter-container">
+        <!-- Barre de recherche -->
+        <div class="search-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un produit...">
+            <button class="search-btn" id="searchBtn">Rechercher</button>
+        </div>
+
+        <!-- Filtres par catégorie -->
+        <div class="category-filters" id="categoryFilters">
+            <button class="category-btn active" data-category="all">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                Tous
+            </button>
+            <button class="category-btn" data-category="football">
+                ⚽ Football
+            </button>
+            <button class="category-btn" data-category="basketball">
+                🏀 Basketball
+            </button>
+            <button class="category-btn" data-category="tennis">
+                🎾 Tennis
+            </button>
+            <button class="category-btn" data-category="running">
+                🏃 Running
+            </button>
+            <button class="category-btn" data-category="fitness">
+                💪 Fitness
+            </button>
+            <button class="category-btn" data-category="natation">
+                🏊 Natation
+            </button>
+            <button class="category-btn" data-category="cyclisme">
+                🚴 Cyclisme
+            </button>
+        </div>
+
+        <!-- Filtres supplémentaires -->
+        <div class="filters-row">
+            <div class="filter-group">
+                <span class="filter-label">Trier par :</span>
+                <select class="filter-select" id="sortFilter">
+                    <option value="popular">Popularité</option>
+                    <option value="price-asc">Prix croissant</option>
+                    <option value="price-desc">Prix décroissant</option>
+                    <option value="newest">Nouveautés</option>
+                    <option value="rating">Meilleures notes</option>
+                    <option value="name-asc">Nom A-Z</option>
+                    <option value="name-desc">Nom Z-A</option>
+                </select>
+
+                <span class="filter-label">Prix :</span>
+                <select class="filter-select" id="priceFilter">
+                    <option value="all">Tous les prix</option>
+                    <option value="0-25">0€ - 25€</option>
+                    <option value="25-50">25€ - 50€</option>
+                    <option value="50-100">50€ - 100€</option>
+                    <option value="100-200">100€ - 200€</option>
+                    <option value="200+">200€ et plus</option>
+                </select>
+
+                <span class="filter-label">Marque :</span>
+                <select class="filter-select" id="brandFilter">
+                    <option value="all">Toutes les marques</option>
+                    <option value="nike">Nike</option>
+                    <option value="adidas">Adidas</option>
+                    <option value="puma">Puma</option>
+                    <option value="reebok">Reebok</option>
+                    <option value="decathlon">Decathlon</option>
+                </select>
+            </div>
+
+            <div class="view-toggle">
+                <button class="view-btn active" id="gridViewBtn" aria-label="Vue grille">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                </button>
+                <button class="view-btn" id="listViewBtn" aria-label="Vue liste">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="3" y="4" width="18" height="4"/>
+                        <rect x="3" y="10" width="18" height="4"/>
+                        <rect x="3" y="16" width="18" height="4"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Infos résultats -->
+<div class="results-info">
+    <p class="results-count">
+        <strong id="resultsCount">0</strong> produits trouvés
+    </p>
+</div>
+
+<!-- Grille des produits -->
+<section class="products-wrapper">
+    <div class="products-container">
+        <div class="products-grid" id="productsGrid">
+            <!-- Les produits seront injectés ici dynamiquement depuis la BDD -->
+            <!-- Exemple de structure de carte produit pour référence -->
+
+            {#
+            Quand vous aurez vos produits depuis la BDD, utilisez cette boucle :
+
+            {% for produit in produits %}
+            <article class="product-card" data-id="{{ produit.id }}" data-category="{{ produit.categorie }}" data-price="{{ produit.prix }}" data-brand="{{ produit.marque }}">
+                <div class="product-image-container">
+                    <div class="product-image">
+                        <img src="{{ produit.image }}" alt="{{ produit.nom }}" loading="lazy">
+                    </div>
+                    <div class="product-badges">
+                        {% if produit.isNew %}
+                        <span class="product-badge badge-new">Nouveau</span>
+                        {% endif %}
+                        {% if produit.remise > 0 %}
+                        <span class="product-badge badge-promo">-{{ produit.remise }}%</span>
+                        {% endif %}
+                    </div>
+                    <button class="product-wishlist" aria-label="Ajouter aux favoris">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </button>
+                    <button class="product-quick-view">Aperçu rapide</button>
+                </div>
+                <div class="product-info">
+                    <p class="product-category">{{ produit.categorie }}</p>
+                    <h3 class="product-title">{{ produit.nom }}</h3>
+                    <div class="product-rating">
+                        <div class="stars">
+                            <!-- Étoiles de notation -->
+                        </div>
+                        <span class="rating-count">({{ produit.nbAvis }} avis)</span>
+                    </div>
+                    <div class="product-price-container">
+                        <span class="product-price">{{ produit.prix }}€</span>
+                        {% if produit.ancienPrix %}
+                        <span class="product-old-price">{{ produit.ancienPrix }}€</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-footer">
+                        <button class="btn-add-cart">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"/>
+                                <circle cx="20" cy="21" r="1"/>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            </svg>
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+            #}
+
+            <!-- Produits de démonstration (à remplacer par les données BDD) -->
+        </div>
+
+        <!-- Message aucun résultat -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+                <path d="M8 8l6 6M14 8l-6 6"/>
+            </svg>
+            <h3>Aucun produit trouvé</h3>
+            <p>Essayez de modifier vos critères de recherche ou de réinitialiser les filtres.</p>
+            <button class="btn-reset-filters" id="resetFilters">Réinitialiser les filtres</button>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="pagination" id="pagination">
+            <button class="page-btn" id="prevPage" aria-label="Page précédente">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">...</button>
+            <button class="page-btn">10</button>
+            <button class="page-btn" id="nextPage" aria-label="Page suivante">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+        </nav>
+    </div>
+</section>
+
+<!-- Modal détail produit -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal-content">
+        <button class="modal-close" id="closeModal" aria-label="Fermer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <div class="modal-body">
+            <div class="modal-gallery">
+                <div class="modal-main-image" id="modalMainImage">
+                    <img src="" alt="Image produit">
+                </div>
+                <div class="modal-thumbnails" id="modalThumbnails">
+                    <!-- Miniatures des images -->
+                </div>
+            </div>
+
+            <div class="modal-details">
+                <p class="modal-category" id="modalCategory">Catégorie</p>
+                <h2 class="modal-title" id="modalTitle">Nom du produit</h2>
+
+                <div class="modal-rating">
+                    <div class="stars" id="modalStars">
+                        <!-- Étoiles -->
+                    </div>
+                    <span class="rating-count" id="modalRatingCount">(0 avis)</span>
+                </div>
+
+                <div class="modal-price-container">
+                    <span class="modal-price" id="modalPrice">0€</span>
+                    <span class="modal-old-price" id="modalOldPrice" style="display: none;"></span>
+                    <span class="product-discount" id="modalDiscount" style="display: none;"></span>
+                </div>
+
+                <p class="modal-description" id="modalDescription">
+                    Description du produit...
+                </p>
+
+                <div class="modal-options">
+                    <div class="option-group" id="sizeOptions">
+                        <p class="option-label">Taille :</p>
+                        <div class="option-values">
+                            <!-- Options de taille -->
+                        </div>
+                    </div>
+
+                    <div class="option-group" id="colorOptions">
+                        <p class="option-label">Couleur :</p>
+                        <div class="option-values">
+                            <!-- Options de couleur -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quantity-selector">
+                    <span class="option-label">Quantité :</span>
+                    <button class="quantity-btn" id="decreaseQty">-</button>
+                    <input type="number" class="quantity-input" id="quantityInput" value="1" min="1" max="99">
+                    <button class="quantity-btn" id="increaseQty">+</button>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-buy-now">
+                        Acheter maintenant
+                    </button>
+                    <button class="btn-add-cart modal-add-cart">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        Ajouter au panier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bouton filtre mobile -->
+<button class="filter-toggle-mobile" id="filterToggleMobile" aria-label="Ouvrir les filtres">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>
+    </svg>
+</button>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>All4Sport</h3>
+            <p style="color: var(--text-secondary);">Votre partenaire sportif depuis 2026. Équipements de qualité pour tous les athlètes.</p>
+            <div class="social-links">
+                <a href="#" class="social-icon" aria-label="Facebook">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                    </svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Instagram">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="var(--bg-card)"/>
+                        <circle cx="17.5" cy="6.5" r="1.5" fill="var(--bg-card)"/>
+                    </svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Twitter">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h3>Catégories</h3>
+            <ul>
+                <li><a href="#">Football</a></li>
+                <li><a href="#">Basketball</a></li>
+                <li><a href="#">Tennis</a></li>
+                <li><a href="#">Running</a></li>
+                <li><a href="#">Fitness</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Aide</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Livraison</a></li>
+                <li><a href="#">Retours</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Informations</h3>
+            <ul>
+                <li><a href="#">À propos</a></li>
+                <li><a href="#">Mentions légales</a></li>
+                <li><a href="#">CGV</a></li>
+                <li><a href="#">Confidentialité</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 All4Sport. Tous droits réservés.</p>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ========================================
+    // GESTION DU THÈME CLAIR/SOMBRE
+    // ========================================
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = themeToggle.querySelector('.sun-icon');
+    const moonIcon = themeToggle.querySelector('.moon-icon');
+    const html = document.documentElement;
+
+    // Charger le thème sauvegardé
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcons(savedTheme);
+
+    themeToggle.addEventListener('click', function() {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+    });
+
+    function updateThemeIcons(theme) {
+        if (theme === 'dark') {
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+        } else {
+            sunIcon.style.display = 'block';
+            moonIcon.style.display = 'none';
+        }
+    }
+
+    // ========================================
+    // HEADER SCROLL EFFECT
+    // ========================================
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // ========================================
+    // GESTION DES FILTRES PAR CATÉGORIE
+    // ========================================
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    let currentCategory = 'all';
+
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            categoryBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentCategory = this.dataset.category;
+            filterProducts();
+        });
+    });
+
+    // ========================================
+    // GESTION DE LA RECHERCHE
+    // ========================================
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+
+    searchBtn.addEventListener('click', filterProducts);
+    searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            filterProducts();
+        }
+    });
+
+    // Recherche en temps réel (debounced)
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterProducts, 300);
+    });
+
+    // ========================================
+    // GESTION DES FILTRES DE TRI
+    // ========================================
+    const sortFilter = document.getElementById('sortFilter');
+    const priceFilter = document.getElementById('priceFilter');
+    const brandFilter = document.getElementById('brandFilter');
+
+    sortFilter.addEventListener('change', filterProducts);
+    priceFilter.addEventListener('change', filterProducts);
+    brandFilter.addEventListener('change', filterProducts);
+
+    // ========================================
+    // FONCTION DE FILTRAGE DES PRODUITS
+    // ========================================
+    function filterProducts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const priceRange = priceFilter.value;
+        const brand = brandFilter.value;
+        const sortBy = sortFilter.value;
+
+        const productCards = document.querySelectorAll('.product-card');
+        let visibleCount = 0;
+
+        productCards.forEach(card => {
+            const title = card.querySelector('.product-title')?.textContent.toLowerCase() || '';
+            const category = card.dataset.category || '';
+            const price = parseFloat(card.dataset.price) || 0;
+            const cardBrand = card.dataset.brand || '';
+
+            let show = true;
+
+            // Filtre par recherche
+            if (searchTerm && !title.includes(searchTerm)) {
+                show = false;
+            }
+
+            // Filtre par catégorie
+            if (currentCategory !== 'all' && category !== currentCategory) {
+                show = false;
+            }
+
+            // Filtre par prix
+            if (priceRange !== 'all') {
+                const [min, max] = priceRange.split('-').map(v => v === '+' ? Infinity : parseFloat(v));
+                if (price < min || (max && price > max)) {
+                    show = false;
+                }
+            }
+
+            // Filtre par marque
+            if (brand !== 'all' && cardBrand !== brand) {
+                show = false;
+            }
+
+            card.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+
+        // Mettre à jour le compteur
+        document.getElementById('resultsCount').textContent = visibleCount;
+
+        // Afficher/masquer le message "aucun résultat"
+        const noResults = document.getElementById('noResults');
+        const productsGrid = document.getElementById('productsGrid');
+
+        if (visibleCount === 0) {
+            noResults.style.display = 'block';
+            productsGrid.style.display = 'none';
+        } else {
+            noResults.style.display = 'none';
+            productsGrid.style.display = 'grid';
+        }
+
+        // Trier les produits
+        sortProducts(sortBy);
+    }
+
+    // ========================================
+    // FONCTION DE TRI DES PRODUITS
+    // ========================================
+    function sortProducts(sortBy) {
+        const grid = document.getElementById('productsGrid');
+        const cards = Array.from(grid.querySelectorAll('.product-card'));
+
+        cards.sort((a, b) => {
+            const priceA = parseFloat(a.dataset.price) || 0;
+            const priceB = parseFloat(b.dataset.price) || 0;
+            const titleA = a.querySelector('.product-title')?.textContent || '';
+            const titleB = b.querySelector('.product-title')?.textContent || '';
+
+            switch(sortBy) {
+                case 'price-asc':
+                    return priceA - priceB;
+                case 'price-desc':
+                    return priceB - priceA;
+                case 'name-asc':
+                    return titleA.localeCompare(titleB);
+                case 'name-desc':
+                    return titleB.localeCompare(titleA);
+                default:
+                    return 0;
+            }
+        });
+
+        cards.forEach(card => grid.appendChild(card));
+    }
+
+    // ========================================
+    // RÉINITIALISATION DES FILTRES
+    // ========================================
+    document.getElementById('resetFilters').addEventListener('click', function() {
+        searchInput.value = '';
+        sortFilter.value = 'popular';
+        priceFilter.value = 'all';
+        brandFilter.value = 'all';
+
+        categoryBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.category === 'all') {
+                btn.classList.add('active');
+            }
+        });
+        currentCategory = 'all';
+
+        filterProducts();
+    });
+
+    // ========================================
+    // TOGGLE VUE GRILLE / LISTE
+    // ========================================
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
+    const productsGrid = document.getElementById('productsGrid');
+
+    gridViewBtn.addEventListener('click', function() {
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+        productsGrid.classList.remove('list-view');
+    });
+
+    listViewBtn.addEventListener('click', function() {
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+        productsGrid.classList.add('list-view');
+    });
+
+    // ========================================
+    // GESTION DE LA MODAL PRODUIT
+    // ========================================
+    const modal = document.getElementById('productModal');
+    const closeModal = document.getElementById('closeModal');
+
+    // Ouvrir la modal au clic sur une carte ou le bouton aperçu
+    document.addEventListener('click', function(e) {
+        const card = e.target.closest('.product-card');
+        const quickViewBtn = e.target.closest('.product-quick-view');
+
+        if (quickViewBtn || (card && !e.target.closest('.product-wishlist') && !e.target.closest('.btn-add-cart'))) {
+            if (card) {
+                openProductModal(card);
+            }
+        }
+    });
+
+    function openProductModal(card) {
+        const title = card.querySelector('.product-title')?.textContent || 'Produit';
+        const category = card.querySelector('.product-category')?.textContent || '';
+        const price = card.querySelector('.product-price')?.textContent || '';
+        const oldPrice = card.querySelector('.product-old-price')?.textContent || '';
+        const image = card.querySelector('.product-image img')?.src || '';
+
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalCategory').textContent = category;
+        document.getElementById('modalPrice').textContent = price;
+
+        const modalMainImage = document.querySelector('#modalMainImage img');
+        if (modalMainImage && image) {
+            modalMainImage.src = image;
+        }
+
+        if (oldPrice) {
+            document.getElementById('modalOldPrice').textContent = oldPrice;
+            document.getElementById('modalOldPrice').style.display = 'inline';
+        } else {
+            document.getElementById('modalOldPrice').style.display = 'none';
+        }
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeModal.addEventListener('click', closeProductModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeProductModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeProductModal();
+        }
+    });
+
+    function closeProductModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ========================================
+    // GESTION DE LA QUANTITÉ
+    // ========================================
+    const quantityInput = document.getElementById('quantityInput');
+    const decreaseBtn = document.getElementById('decreaseQty');
+    const increaseBtn = document.getElementById('increaseQty');
+
+    decreaseBtn.addEventListener('click', function() {
+        let value = parseInt(quantityInput.value) || 1;
+        if (value > 1) {
+            quantityInput.value = value - 1;
+        }
+    });
+
+    increaseBtn.addEventListener('click', function() {
+        let value = parseInt(quantityInput.value) || 1;
+        if (value < 99) {
+            quantityInput.value = value + 1;
+        }
+    });
+
+    // ========================================
+    // GESTION DES FAVORIS (WISHLIST)
+    // ========================================
+    document.addEventListener('click', function(e) {
+        const wishlistBtn = e.target.closest('.product-wishlist');
+        if (wishlistBtn) {
+            e.stopPropagation();
+            wishlistBtn.classList.toggle('active');
+
+            // Animation de feedback
+            wishlistBtn.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                wishlistBtn.style.transform = '';
+            }, 200);
+        }
+    });
+
+    // ========================================
+    // GESTION DU PANIER
+    // ========================================
+    let cartCount = 0;
+    const cartBadge = document.querySelector('.cart-badge');
+
+    document.addEventListener('click', function(e) {
+        const addToCartBtn = e.target.closest('.btn-add-cart');
+        if (addToCartBtn) {
+            e.stopPropagation();
+
+            cartCount++;
+            cartBadge.textContent = cartCount;
+
+            // Animation de feedback
+            addToCartBtn.style.transform = 'scale(0.95)';
+            addToCartBtn.textContent = 'Ajouté ✓';
+
+            setTimeout(() => {
+                addToCartBtn.style.transform = '';
+                addToCartBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"/>
+                        <circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                    Ajouter
+                `;
+            }, 1500);
+
+            // Animation du badge panier
+            cartBadge.style.transform = 'scale(1.5)';
+            setTimeout(() => {
+                cartBadge.style.transform = '';
+            }, 300);
+        }
+    });
+
+    // ========================================
+    // CHARGEMENT DES PRODUITS DE DÉMONSTRATION
+    // ========================================
+    const demoProducts = [
+        { id: 1, name: "Ballon de Football Pro", category: "football", price: 29.99, brand: "nike", rating: 4.5, reviews: 128, isNew: true, image: "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=400" },
+        { id: 2, name: "Chaussures Running Ultra", category: "running", price: 129.99, oldPrice: 159.99, brand: "adidas", rating: 4.8, reviews: 256, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
+        { id: 3, name: "Raquette Tennis Elite", category: "tennis", price: 189.99, brand: "decathlon", rating: 4.3, reviews: 89, image: "https://images.unsplash.com/photo-1617883861744-13b534e3b928?w=400" },
+        { id: 4, name: "Ballon Basketball Street", category: "basketball", price: 34.99, brand: "nike", rating: 4.6, reviews: 167, isNew: true, image: "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=400" },
+        { id: 5, name: "Haltères Fitness 10kg", category: "fitness", price: 49.99, brand: "decathlon", rating: 4.7, reviews: 203, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400" },
+        { id: 6, name: "Lunettes Natation Pro", category: "natation", price: 24.99, oldPrice: 34.99, brand: "decathlon", rating: 4.4, reviews: 145, image: "https://images.unsplash.com/photo-1622629797619-c100e3e67e2e?w=400" },
+        { id: 7, name: "Casque Vélo Aéro", category: "cyclisme", price: 89.99, brand: "decathlon", rating: 4.9, reviews: 78, isNew: true, image: "https://images.unsplash.com/photo-1557803175-2f8c0f2b8b8e?w=400" },
+        { id: 8, name: "Maillot Football Équipe", category: "football", price: 69.99, brand: "puma", rating: 4.2, reviews: 312, image: "https://images.unsplash.com/photo-1577212017184-80cc0da11082?w=400" },
+        { id: 9, name: "Tapis de Yoga Premium", category: "fitness", price: 39.99, brand: "decathlon", rating: 4.8, reviews: 428, image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400" },
+        { id: 10, name: "Short Running Léger", category: "running", price: 29.99, brand: "nike", rating: 4.5, reviews: 187, image: "https://images.unsplash.com/photo-1539185441755-769473a23570?w=400" },
+        { id: 11, name: "Gants de Boxe Pro", category: "fitness", price: 59.99, oldPrice: 79.99, brand: "reebok", rating: 4.6, reviews: 94, image: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=400" },
+        { id: 12, name: "Vélo VTT Tout Terrain", category: "cyclisme", price: 599.99, brand: "decathlon", rating: 4.7, reviews: 56, isNew: true, image: "https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=400" }
+    ];
+
+    function generateStars(rating) {
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(rating)) {
+                starsHtml += '<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+                starsHtml += '<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" opacity="0.5"/></svg>';
+            } else {
+                starsHtml += '<svg class="star empty" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            }
+        }
+        return starsHtml;
+    }
+
+    function renderProducts(products) {
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = products.map((product, index) => `
+            <article class="product-card" data-id="${product.id}" data-category="${product.category}" data-price="${product.price}" data-brand="${product.brand}" style="animation-delay: ${index * 0.1}s">
+                <div class="product-image-container">
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+disponible'">
+                    </div>
+                    <div class="product-badges">
+                        ${product.isNew ? '<span class="product-badge badge-new">Nouveau</span>' : ''}
+                        ${product.oldPrice ? `<span class="product-badge badge-promo">-${Math.round((1 - product.price / product.oldPrice) * 100)}%</span>` : ''}
+                    </div>
+                    <button class="product-wishlist" aria-label="Ajouter aux favoris">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </button>
+                    <button class="product-quick-view">Aperçu rapide</button>
+                </div>
+                <div class="product-info">
+                    <p class="product-category">${product.category}</p>
+                    <h3 class="product-title">${product.name}</h3>
+                    <div class="product-rating">
+                        <div class="stars">${generateStars(product.rating)}</div>
+                        <span class="rating-count">(${product.reviews} avis)</span>
+                    </div>
+                    <div class="product-price-container">
+                        <span class="product-price">${product.price.toFixed(2)}€</span>
+                        ${product.oldPrice ? `<span class="product-old-price">${product.oldPrice.toFixed(2)}€</span>` : ''}
+                    </div>
+                    <div class="product-footer">
+                        <button class="btn-add-cart">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"/>
+                                <circle cx="20" cy="21" r="1"/>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            </svg>
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+
+        document.getElementById('resultsCount').textContent = products.length;
+    }
+
+    // Afficher les produits de démonstration
+    renderProducts(demoProducts);
+});
+</script>
+{% endblock %}
