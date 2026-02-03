@@ -2515,6 +2515,12 @@ body {
     height: 18px;
 }
 
+.page-dots {
+    padding: 0 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
 /* ==========================================
    NO RESULTS
    ========================================== */
