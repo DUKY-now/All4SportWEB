@@ -93,3 +93,10 @@ Création des pages:
 - Mes infos: Stéphane
 Création de la BDD: Théo
 - client
+
+27/01:
+- bdd 
+- design page vente
+
+03/02:
+- 
