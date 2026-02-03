@@ -166,19 +166,14 @@
     <div class="products-container">
         <div class="products-grid" id="productsGrid">
             {# Les produits seront affichés depuis la BDD #}
-            {% for produit in produits %}
-            <article class="product-card" data-id="{{ produit.id }}" data-category="{{ produit.categorie }}" data-price="{{ produit.prix }}" data-brand="{{ produit.marque }}">
+            {% for item in produits %}
+            {% set produit = item.produit %}
+            <article class="product-card" data-id="{{ produit.id }}" data-category="{{ produit.categorie ? produit.categorie.nomCategorie : '' }}" data-price="{{ produit.prix }}">
                 <div class="product-image-container">
                     <div class="product-image">
-                        <img src="{{ produit.image }}" alt="{{ produit.nom }}" loading="lazy">
+                        <img src="{{ produit.image ? produit.image : 'https://placehold.co/300x300?text=No+Image' }}" alt="{{ produit.nomProduit }}" loading="lazy">
                     </div>
                     <div class="product-badges">
-                        {% if produit.isNew %}
-                        <span class="product-badge badge-new">Nouveau</span>
-                        {% endif %}
-                        {% if produit.remise > 0 %}
-                        <span class="product-badge badge-promo">-{{ produit.remise }}%</span>
-                        {% endif %}
                     </div>
                     <button class="product-wishlist" aria-label="Ajouter aux favoris">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -188,19 +183,22 @@
                     <button class="product-quick-view">Aperçu rapide</button>
                 </div>
                 <div class="product-info">
-                    <p class="product-category">{{ produit.categorie }}</p>
-                    <h3 class="product-title">{{ produit.nom }}</h3>
+                    <p class="product-category">{{ produit.categorie ? produit.categorie.nomCategorie : 'Non catégorisé' }}</p>
+                    <h3 class="product-title">{{ produit.nomProduit }}</h3>
                     <div class="product-rating">
                         <div class="stars">
-                            <!-- Étoiles de notation -->
+                            {% for i in 1..5 %}
+                                {% if i <= item.moyenneAvis %}
+                                    <span style="color: gold;">★</span>
+                                {% else %}
+                                    <span style="color: #ddd;">★</span>
+                                {% endif %}
+                            {% endfor %}
                         </div>
-                        <span class="rating-count">({{ produit.nbAvis }} avis)</span>
+                        <span class="rating-count">({{ item.nbAvis }} avis)</span>
                     </div>
                     <div class="product-price-container">
                         <span class="product-price">{{ produit.prix }}€</span>
-                        {% if produit.ancienPrix %}
-                        <span class="product-old-price">{{ produit.ancienPrix }}€</span>
-                        {% endif %}
                     </div>
                     <div class="product-footer">
                         <button class="btn-add-cart">
@@ -772,86 +770,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ========================================
-    // CHARGEMENT DES PRODUITS DE DÉMONSTRATION
+    // INITIALISATION DU COMPTEUR DE PRODUITS
     // ========================================
-    const demoProducts = [
-        { id: 1, name: "Ballon de Football Pro", category: "football", price: 29.99, brand: "nike", rating: 4.5, reviews: 128, isNew: true, image: "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=400" },
-        { id: 2, name: "Chaussures Running Ultra", category: "running", price: 129.99, oldPrice: 159.99, brand: "adidas", rating: 4.8, reviews: 256, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
-        { id: 3, name: "Raquette Tennis Elite", category: "tennis", price: 189.99, brand: "decathlon", rating: 4.3, reviews: 89, image: "https://images.unsplash.com/photo-1617883861744-13b534e3b928?w=400" },
-        { id: 4, name: "Ballon Basketball Street", category: "basketball", price: 34.99, brand: "nike", rating: 4.6, reviews: 167, isNew: true, image: "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=400" },
-        { id: 5, name: "Haltères Fitness 10kg", category: "fitness", price: 49.99, brand: "decathlon", rating: 4.7, reviews: 203, image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400" },
-        { id: 6, name: "Lunettes Natation Pro", category: "natation", price: 24.99, oldPrice: 34.99, brand: "decathlon", rating: 4.4, reviews: 145, image: "https://images.unsplash.com/photo-1622629797619-c100e3e67e2e?w=400" },
-        { id: 7, name: "Casque Vélo Aéro", category: "cyclisme", price: 89.99, brand: "decathlon", rating: 4.9, reviews: 78, isNew: true, image: "https://images.unsplash.com/photo-1557803175-2f8c0f2b8b8e?w=400" },
-        { id: 8, name: "Maillot Football Équipe", category: "football", price: 69.99, brand: "puma", rating: 4.2, reviews: 312, image: "https://images.unsplash.com/photo-1577212017184-80cc0da11082?w=400" },
-        { id: 9, name: "Tapis de Yoga Premium", category: "fitness", price: 39.99, brand: "decathlon", rating: 4.8, reviews: 428, image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400" },
-        { id: 10, name: "Short Running Léger", category: "running", price: 29.99, brand: "nike", rating: 4.5, reviews: 187, image: "https://images.unsplash.com/photo-1539185441755-769473a23570?w=400" },
-        { id: 11, name: "Gants de Boxe Pro", category: "fitness", price: 59.99, oldPrice: 79.99, brand: "reebok", rating: 4.6, reviews: 94, image: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=400" },
-        { id: 12, name: "Vélo VTT Tout Terrain", category: "cyclisme", price: 599.99, brand: "decathlon", rating: 4.7, reviews: 56, isNew: true, image: "https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=400" }
-    ];
-
-    function generateStars(rating) {
-        let starsHtml = '';
-        for (let i = 1; i <= 5; i++) {
-            if (i <= Math.floor(rating)) {
-                starsHtml += '<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
-            } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
-                starsHtml += '<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" opacity="0.5"/></svg>';
-            } else {
-                starsHtml += '<svg class="star empty" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
-            }
-        }
-        return starsHtml;
-    }
-
-    function renderProducts(products) {
-        const grid = document.getElementById('productsGrid');
-        grid.innerHTML = products.map((product, index) => `
-            <article class="product-card" data-id="${product.id}" data-category="${product.category}" data-price="${product.price}" data-brand="${product.brand}" style="animation-delay: ${index * 0.1}s">
-                <div class="product-image-container">
-                    <div class="product-image">
-                        <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+disponible'">
-                    </div>
-                    <div class="product-badges">
-                        ${product.isNew ? '<span class="product-badge badge-new">Nouveau</span>' : ''}
-                        ${product.oldPrice ? `<span class="product-badge badge-promo">-${Math.round((1 - product.price / product.oldPrice) * 100)}%</span>` : ''}
-                    </div>
-                    <button class="product-wishlist" aria-label="Ajouter aux favoris">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                    </button>
-                    <button class="product-quick-view">Aperçu rapide</button>
-                </div>
-                <div class="product-info">
-                    <p class="product-category">${product.category}</p>
-                    <h3 class="product-title">${product.name}</h3>
-                    <div class="product-rating">
-                        <div class="stars">${generateStars(product.rating)}</div>
-                        <span class="rating-count">(${product.reviews} avis)</span>
-                    </div>
-                    <div class="product-price-container">
-                        <span class="product-price">${product.price.toFixed(2)}€</span>
-                        ${product.oldPrice ? `<span class="product-old-price">${product.oldPrice.toFixed(2)}€</span>` : ''}
-                    </div>
-                    <div class="product-footer">
-                        <button class="btn-add-cart">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"/>
-                                <circle cx="20" cy="21" r="1"/>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                            </svg>
-                            Ajouter
-                        </button>
-                    </div>
-                </div>
-            </article>
-        `).join('');
-
-        document.getElementById('resultsCount').textContent = products.length;
-    }
-
-    // Afficher les produits de démonstration
-    renderProducts(demoProducts);
+    const productCards = document.querySelectorAll('.product-card');
+    document.getElementById('resultsCount').textContent = productCards.length;
 });
 </script>
 {% endblock %}
