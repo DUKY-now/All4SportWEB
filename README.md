@@ -91,8 +91,8 @@ Création du projet symfony
 Création des pages:
 - panier: Télio
 - Mes infos: Stéphane
-Création de la BDD: Théo
-- client
+- Création de la table Client Théo
+
 
 27/01:
 - bdd 
