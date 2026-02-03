@@ -17,10 +17,10 @@ class LignePanier
     private ?int $quantite = null;
 
     #[ORM\ManyToOne(inversedBy: 'lignePaniers')]
-    private ?panier $panier = null;
+    private ?Panier $panier = null;
 
     #[ORM\ManyToOne(inversedBy: 'lignePaniers')]
-    private ?produit $produit = null;
+    private ?Produit $produit = null;
 
     public function getId(): ?int
     {
@@ -39,24 +39,24 @@ class LignePanier
         return $this;
     }
 
-    public function getPanier(): ?panier
+    public function getPanier(): ?Panier
     {
         return $this->panier;
     }
 
-    public function setPanier(?panier $panier): static
+    public function setPanier(?Panier $panier): static
     {
         $this->panier = $panier;
 
         return $this;
     }
 
-    public function getProduit(): ?produit
+    public function getProduit(): ?Produit
     {
         return $this->produit;
     }
 
-    public function setProduit(?produit $produit): static
+    public function setProduit(?Produit $produit): static
     {
         $this->produit = $produit;
 

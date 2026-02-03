@@ -29,10 +29,10 @@ class Commande
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
-    private ?client $client = null;
+    private ?Client $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
-    private ?adresse $adresseLivraison = null;
+    private ?Adresse $adresseLivraison = null;
 
     /**
      * @var Collection<int, LigneCommande>
@@ -98,24 +98,24 @@ class Commande
         return $this;
     }
 
-    public function getClient(): ?client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?client $client): static
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 
         return $this;
     }
 
-    public function getAdresseLivraison(): ?adresse
+    public function getAdresseLivraison(): ?Adresse
     {
         return $this->adresseLivraison;
     }
 
-    public function setAdresseLivraison(?adresse $adresseLivraison): static
+    public function setAdresseLivraison(?Adresse $adresseLivraison): static
     {
         $this->adresseLivraison = $adresseLivraison;
 

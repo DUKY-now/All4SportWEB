@@ -24,10 +24,10 @@ class Avis
     private ?\DateTime $dateAvis = null;
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
-    private ?client $client = null;
+    private ?Client $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
-    private ?produit $produit = null;
+    private ?Produit $produit = null;
 
     public function getId(): ?int
     {
@@ -70,24 +70,24 @@ class Avis
         return $this;
     }
 
-    public function getClient(): ?client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?client $client): static
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 
         return $this;
     }
 
-    public function getProduit(): ?produit
+    public function getProduit(): ?Produit
     {
         return $this->produit;
     }
 
-    public function setProduit(?produit $produit): static
+    public function setProduit(?Produit $produit): static
     {
         $this->produit = $produit;
 

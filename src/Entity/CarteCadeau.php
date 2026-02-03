@@ -30,7 +30,7 @@ class CarteCadeau
     private ?bool $actif = null;
 
     #[ORM\ManyToOne(inversedBy: 'carteCadeaus')]
-    private ?client $client = null;
+    private ?Client $client = null;
 
     public function getId(): ?int
     {
@@ -97,12 +97,12 @@ class CarteCadeau
         return $this;
     }
 
-    public function getClient(): ?client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?client $client): static
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 

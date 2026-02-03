@@ -23,7 +23,7 @@ class Stock
     private ?Produit $produit = null;
 
     #[ORM\ManyToOne(inversedBy: 'stocks')]
-    private ?magasin $magasin = null;
+    private ?Magasin $magasin = null;
 
     public function getId(): ?int
     {
@@ -66,12 +66,12 @@ class Stock
         return $this;
     }
 
-    public function getMagasin(): ?magasin
+    public function getMagasin(): ?Magasin
     {
         return $this->magasin;
     }
 
-    public function setMagasin(?magasin $magasin): static
+    public function setMagasin(?Magasin $magasin): static
     {
         $this->magasin = $magasin;
 

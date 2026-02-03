@@ -23,7 +23,7 @@ class Livraison
     private ?string $statut = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?commande $commande = null;
+    private ?Commande $commande = null;
 
     public function getId(): ?int
     {
@@ -66,12 +66,12 @@ class Livraison
         return $this;
     }
 
-    public function getCommande(): ?commande
+    public function getCommande(): ?Commande
     {
         return $this->commande;
     }
 
-    public function setCommande(?commande $commande): static
+    public function setCommande(?Commande $commande): static
     {
         $this->commande = $commande;
 

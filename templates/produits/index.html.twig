@@ -165,12 +165,7 @@
 <section class="products-wrapper">
     <div class="products-container">
         <div class="products-grid" id="productsGrid">
-            <!-- Les produits seront injectés ici dynamiquement depuis la BDD -->
-            <!-- Exemple de structure de carte produit pour référence -->
-
-            {#
-            Quand vous aurez vos produits depuis la BDD, utilisez cette boucle :
-
+            {# Les produits seront affichés depuis la BDD #}
             {% for produit in produits %}
             <article class="product-card" data-id="{{ produit.id }}" data-category="{{ produit.categorie }}" data-price="{{ produit.prix }}" data-brand="{{ produit.marque }}">
                 <div class="product-image-container">
@@ -220,7 +215,7 @@
                 </div>
             </article>
             {% endfor %}
-            #}
+
 
             <!-- Produits de démonstration (à remplacer par les données BDD) -->
         </div>
