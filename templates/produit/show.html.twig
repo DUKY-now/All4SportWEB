@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nomProduit }} - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/produits.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/produit-detail.css') }}">
+{% endblock %}
+
+{% block body %}
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ path('app_home') }}" class="logo">🏃 All4Sport</a>
+        <ul class="nav-menu">
+            <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+            <li><a href="{{ path('app_produit_index') }}" class="nav-link">Produits</a></li>
+            {% if app.user %}
+                <li><a href="{{ path('app_logout') }}" class="btn-nav">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{{ path('app_login') }}" class="btn-nav">Connexion</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<div class="product-detail-container">
+    <!-- Breadcrumb -->
+    <div class="product-breadcrumb">
+        <a href="{{ path('app_home') }}">🏠 Accueil</a>
+        <span>›</span>
+        <a href="{{ path('app_produit_index') }}">Produits</a>
+        <span>›</span>
+        <span>{{ produit.nomProduit }}</span>
+    </div>
+
+    <!-- Product Detail Card -->
+    <div class="product-detail-card">
+        <div class="product-detail-grid">
+            <!-- Image Section -->
+            <div class="product-detail-image">
+                {% set icons = {
+                    'football': '⚽',
+                    'basketball': '🏀',
+                    'tennis': '🎾',
+                    'running': '👟',
+                    'yoga': '🧘',
+                    'dumbbells': '🏋️',
+                    'swim': '🏊',
+                    'kettlebell': '💪',
+                    'watch': '⌚',
+                    'resistance': '🎯'
+                } %}
+
+                {% set icon = '🏆' %}
+                {% for key, emoji in icons %}
+                    {% if key in produit.imageUrl|lower %}
+                        {% set icon = emoji %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="product-detail-image-icon">{{ icon }}</div>
+
+                {% if produit.stocks|length > 0 and produit.stocks[0].quantiteDisponible < 20 and produit.stocks[0].quantiteDisponible > 0 %}
+                    <div class="product-badge-large">⚡ Stock limité!</div>
+                {% endif %}
+            </div>
+
+            <!-- Content Section -->
+            <div class="product-detail-content">
+                {% if produit.stocks|length > 0 %}
+                    <div class="product-category-badge">
+                        📂 {{ produit.stocks[0].rayon.nomRayon }}
+                    </div>
+                {% endif %}
+
+                <h1 class="product-detail-title">{{ produit.nomProduit }}</h1>
+
+                <p class="product-detail-description">{{ produit.description }}</p>
+
+                <div class="product-detail-price">{{ produit.prixVente }} €</div>
+
+                {% if produit.stocks|length > 0 %}
+                    {% set stock = produit.stocks[0] %}
+                    {% if stock.quantiteDisponible > 20 %}
+                        <div class="product-detail-stock">
+                            <div class="stock-icon">✅</div>
+                            <div class="stock-info">
+                                <strong>En stock</strong>
+                                <span>{{ stock.quantiteDisponible }} unités disponibles</span>
+                            </div>
+                        </div>
+                    {% elseif stock.quantiteDisponible > 0 %}
+                        <div class="product-detail-stock low">
+                            <div class="stock-icon">⚠️</div>
+                            <div class="stock-info">
+                                <strong>Stock limité</strong>
+                                <span>Plus que {{ stock.quantiteDisponible }} unités disponibles</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="product-detail-stock out">
+                            <div class="stock-icon">❌</div>
+                            <div class="stock-info">
+                                <strong>Rupture de stock</strong>
+                                <span>Produit temporairement indisponible</span>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="product-detail-meta">
+                        <div class="meta-item">
+                            <div class="meta-icon">📦</div>
+                            <div class="meta-content">
+                                <strong>Lieu de stockage</strong>
+                                <span>{{ stock.lieuStockage }}</span>
+                            </div>
+                        </div>
+
+                        <div class="meta-item">
+                            <div class="meta-icon">🚚</div>
+                            <div class="meta-content">
+                                <strong>Livraison</strong>
+                                <span>24-48h</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="product-detail-actions">
+                    {% if produit.stocks|length > 0 and produit.stocks[0].quantiteDisponible > 0 %}
+                        <button class="btn-add-to-cart">🛒 Ajouter au panier</button>
+                    {% else %}
+                        <button class="btn-add-to-cart" disabled style="opacity: 0.5; cursor: not-allowed;">
+                            ❌ Produit indisponible
+                        </button>
+                    {% endif %}
+                    <a href="{{ path('app_produit_index') }}" class="btn-back">
+                        ← Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

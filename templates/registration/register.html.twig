@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Créer un compte</h1>
+            <p>Rejoignez All4Sport dès maintenant</p>
+        </div>
+
+        <div class="auth-body">
+            {{ form_start(registrationForm) }}
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.nom) }}
+                    {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control', 'placeholder': 'Votre nom'}}) }}
+                    {{ form_errors(registrationForm.nom) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.prenom) }}
+                    {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Votre prénom'}}) }}
+                    {{ form_errors(registrationForm.prenom) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.email) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'votre.email@exemple.com'}}) }}
+                    {{ form_errors(registrationForm.email) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.telephone) }}
+                    {{ form_widget(registrationForm.telephone, {'attr': {'class': 'form-control', 'placeholder': '06 12 34 56 78'}}) }}
+                    {{ form_errors(registrationForm.telephone) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword) }}
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Minimum 6 caractères'}}) }}
+                    {{ form_errors(registrationForm.plainPassword) }}
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem; color: #667eea; font-size: 1.1rem;">📍 Votre adresse</h3>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.rue) }}
+                    {{ form_widget(registrationForm.rue, {'attr': {'class': 'form-control', 'placeholder': '123 rue de la République'}}) }}
+                    {{ form_errors(registrationForm.rue) }}
+                </div>
+
+                <div class="address-grid">
+                    <div class="form-group">
+                        {{ form_label(registrationForm.code_postal) }}
+                        {{ form_widget(registrationForm.code_postal, {'attr': {'class': 'form-control', 'placeholder': '75001'}}) }}
+                        {{ form_errors(registrationForm.code_postal) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(registrationForm.ville) }}
+                        {{ form_widget(registrationForm.ville, {'attr': {'class': 'form-control', 'placeholder': 'Paris'}}) }}
+                        {{ form_errors(registrationForm.ville) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.pays) }}
+                    {{ form_widget(registrationForm.pays, {'attr': {'class': 'form-control', 'placeholder': 'France', 'value': 'France'}}) }}
+                    {{ form_errors(registrationForm.pays) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.complement) }}
+                    {{ form_widget(registrationForm.complement, {'attr': {'class': 'form-control', 'placeholder': 'Bâtiment, Étage, Appartement...'}}) }}
+                    {{ form_errors(registrationForm.complement) }}
+                </div>
+
+                <div class="checkbox-group">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_label(registrationForm.agreeTerms) }}
+                </div>
+                {{ form_errors(registrationForm.agreeTerms) }}
+
+                <button type="submit" class="btn-primary">Créer mon compte</button>
+
+            {{ form_end(registrationForm) }}
+
+            <div class="auth-footer">
+                <p>Vous avez déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

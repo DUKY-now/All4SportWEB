@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/account.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="account-container">
+    <header class="page-header">
+        <h1 class="page-title">Bonjour {{ app.user.prenom }} {{ app.user.nom }}</h1>
+        <p class="page-subtitle">Gérez votre profil, vos commandes et vos informations personnelles.</p>
+    </header>
+
+    <div class="account-grid">
+        <aside class="account-sidebar">
+            <div class="user-profile">
+                <div class="user-avatar">{{ app.user.prenom|slice(0,1) ~ app.user.nom|slice(0,1) }}</div>
+                <div class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</div>
+                <div class="user-email">{{ app.user.email }}</div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><span class="sidebar-menu-icon">📋</span> Tableau de bord</a></li>
+                <li><a href="#"><span class="sidebar-menu-icon">🛒</span> Mes commandes ({{ app.user.commandes|length }})</a></li>
+                <li><a href="#"><span class="sidebar-menu-icon">✏️</span> Modifier mon profil</a></li>
+                <li><a href="{{ path('app_logout') }}"><span class="sidebar-menu-icon">🔒</span> Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <main class="account-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🛍️</div>
+                    <div class="stat-label">Commandes</div>
+                    <div class="stat-value">{{ app.user.commandes|length }}</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-label">Membre depuis</div>
+                    <div class="stat-value">{{ app.user.dateInscription ? app.user.dateInscription|date('d/m/Y') : '—' }}</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📞</div>
+                    <div class="stat-label">Téléphone</div>
+                    <div class="stat-value">{{ app.user.telephone ?: 'Non renseigné' }}</div>
+                </div>
+            </div>
+
+            <section class="info-section">
+                <div class="info-section-header">
+                    <h2 class="info-section-title">Informations personnelles</h2>
+                    <a href="#" class="btn-edit">Modifier</a>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Nom</div>
+                        <div class="info-value">{{ app.user.prenom }} {{ app.user.nom }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ app.user.email }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Téléphone</div>
+                        <div class="info-value">{{ app.user.telephone ?: 'Non renseigné' }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Adresse</div>
+                        <div class="info-value">
+                            {% if app.user.adresse %}
+                                {{ app.user.adresse.rue }}, {{ app.user.adresse.codePostal }} {{ app.user.adresse.ville }}<br>{{ app.user.adresse.pays }}
+                            {% else %}
+                                Non renseignée
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="info-section-header">
+                    <h2 class="info-section-title">Dernières commandes</h2>
+                </div>
+
+                {% if app.user.commandes|length > 0 %}
+                    <div class="orders-list">
+                        {% for commande in app.user.commandes|slice(0,5) %}
+                            <div class="order-card">
+                                <div class="order-header">
+                                    <div class="order-number">Commande #{{ commande.id }}</div>
+                                    <div class="order-date">{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y') : '—' }}</div>
+                                </div>
+                                <div class="order-details">
+                                    <div class="order-amount">Total: {{ commande.total|default('—') }}€</div>
+                                    <div class="order-status">Statut: {{ commande.statut|default('—') }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🧾</div>
+                        <h3>Aucune commande</h3>
+                        <p>Vous n'avez pas encore passé de commande. Découvrez nos produits et profitez des offres !</p>
+                        <a href="{{ path('app_produit_index') }}" class="btn btn-primary">Voir les produits</a>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</div>
+{% endblock %}

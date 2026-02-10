@@ -1,0 +1,755 @@
+=== COMMANDES POUR LA CRÉATION DE LA BASE DE DONNÉES AP4ALL4SPORTWEB ===
+
+ÉTAPE 1 : CRÉATION DE LA BASE DE DONNÉES (si nécessaire)
+---------------------------------------------------------
+Note: La base de données 'ap4all4sportweb' est déjà configurée dans le fichier .env
+Si elle n'existe pas encore, vous pouvez la créer avec :
+
+php bin/console doctrine:database:create
+
+✅ EXÉCUTÉE AVEC SUCCÈS - Database `ap4all4sportweb` créée
+
+
+ÉTAPE 2 : VÉRIFICATION DES ENTITÉS CRÉÉES
+------------------------------------------
+Toutes les entités ont été créées selon le MCD :
+- Adresse (id, rue, code_postal, ville, pays, complement)
+- Client (id, role, nom, prenom, email, mot_de_passe, telephone, date_inscription)
+- Commande (id, numero_commande, statut, mode_livraison, date_commande)
+- Produit (id, nom_produit, description, prix_vente, image_url)
+- Stock (id, lieu_stockage, quantite_disponible)
+- Rayon (id, nom_rayon, description)
+- Composer (id, quantite, prix_unitaire, sous_total) - Table de liaison Commande/Produit
+
+✅ TOUTES LES ENTITÉS CRÉÉES
+
+
+ÉTAPE 3 : GÉNÉRATION DE LA MIGRATION
+-------------------------------------
+php bin/console make:migration
+
+✅ EXÉCUTÉE AVEC SUCCÈS - Migration Version20260210075253.php créée
+
+
+ÉTAPE 4 : VÉRIFICATION DE LA MIGRATION GÉNÉRÉE
+-----------------------------------------------
+Vérifier le fichier de migration dans le dossier migrations/
+Il devrait contenir la création de toutes les tables avec leurs relations
+
+✅ FICHIER migrations/Version20260210075253.php créé
+
+
+ÉTAPE 5 : EXÉCUTION DE LA MIGRATION
+------------------------------------
+php bin/console doctrine:migrations:migrate
+
+✅ EXÉCUTÉE AVEC SUCCÈS - 15 requêtes SQL exécutées, 7 tables créées
+
+
+ÉTAPE 6 : VÉRIFICATION DE LA STRUCTURE DE LA BASE DE DONNÉES
+-------------------------------------------------------------
+php bin/console doctrine:schema:validate
+
+✅ EXÉCUTÉE AVEC SUCCÈS - Le schéma de la base de données est synchronisé avec les entités
+
+
+ÉTAPE 7 : AFFICHER LA LISTE DES ENTITÉS
+----------------------------------------
+php bin/console doctrine:mapping:info
+
+✅ EXÉCUTÉE AVEC SUCCÈS - 7 entités mappées trouvées
+
+
+ÉTAPE 8 (OPTIONNEL) : AFFICHER LE SQL DE CRÉATION DES TABLES
+-------------------------------------------------------------
+php bin/console doctrine:schema:update --dump-sql
+
+Cette commande affiche le SQL sans l'exécuter
+
+
+=== CRÉATION DU SYSTÈME D'AUTHENTIFICATION ===
+
+ÉTAPE 9 : CRÉATION DU SYSTÈME DE CONNEXION
+-------------------------------------------
+php bin/console make:auth
+
+Options sélectionnées :
+- Type d'authentification : Login form authenticator (option 1)
+- Nom de l'authenticator : login
+- Nom du controller : SecurityController (par défaut)
+- Générer /logout : yes
+- Support remember me : yes
+- Activation remember me : Quand l'utilisateur coche une case (option 0)
+
+✅ EXÉCUTÉE AVEC SUCCÈS
+Fichiers créés :
+- src/Security/LoginAuthenticator.php
+- src/Controller/SecurityController.php
+- templates/security/login.html.twig
+Fichiers modifiés :
+- config/packages/security.yaml
+
+
+ÉTAPE 10 : CRÉATION DU FORMULAIRE D'INSCRIPTION
+------------------------------------------------
+php bin/console make:registration-form
+
+Options sélectionnées :
+- Entité utilisateur : App\Entity\Client (par défaut)
+- Champ pour le mot de passe encodé : mot_de_passe (option 5)
+- Ajouter @UniqueEntity sur l'email : yes
+- Envoyer un email de vérification : no
+- Authentifier automatiquement après inscription : yes
+- Générer des tests PHPUnit : no
+
+✅ EXÉCUTÉE AVEC SUCCÈS
+Fichiers créés :
+- src/Form/RegistrationFormType.php
+- src/Controller/RegistrationController.php
+- templates/registration/register.html.twig
+Fichiers modifiés :
+- src/Entity/Client.php (ajout de l'annotation @UniqueEntity)
+
+
+ÉTAPE 11 : CRÉATION DU CONTRÔLEUR PAGE D'ACCUEIL
+-------------------------------------------------
+php bin/console make:controller Home
+
+Options sélectionnées :
+- Générer des tests PHPUnit : no
+
+✅ EXÉCUTÉE AVEC SUCCÈS
+Fichiers créés :
+- src/Controller/HomeController.php
+- templates/home/index.html.twig
+
+
+=== RÉSUMÉ DES RELATIONS DU MCD ===
+
+1. ADRESSE (1,N) LIVRER_A → COMMANDE (0,N)
+2. CLIENT (1,N) PASSER → COMMANDE (0,N)
+3. COMMANDE (0,N) COMPOSER → PRODUIT (0,N) [via table Composer]
+4. PRODUIT (1,N) ETRE_STOCKE → STOCK (0,N)
+5. RAYON (1,1) POSSEDER → STOCK (1,N)
+
+
+=== TABLES CRÉÉES DANS LA BASE DE DONNÉES ===
+
+1. adresse
+   - id (PK, AUTO_INCREMENT)
+   - rue (VARCHAR 255)
+   - code_postal (VARCHAR 10)
+   - ville (VARCHAR 100)
+   - pays (VARCHAR 100)
+   - complement (VARCHAR 255, NULL)
+
+2. client
+   - id (PK, AUTO_INCREMENT)
+   - adresse_id (FK → adresse.id)
+   - role (VARCHAR 50)
+   - nom (VARCHAR 100)
+   - prenom (VARCHAR 100)
+   - email (VARCHAR 255, UNIQUE)
+   - mot_de_passe (VARCHAR 255)
+   - telephone (VARCHAR 20, NULL)
+   - date_inscription (DATETIME)
+
+3. commande
+   - id (PK, AUTO_INCREMENT)
+   - client_id (FK → client.id)
+   - adresse_id (FK → adresse.id)
+   - numero_commande (VARCHAR 50, UNIQUE)
+   - statut (VARCHAR 50)
+   - mode_livraison (VARCHAR 100)
+   - date_commande (DATETIME)
+
+4. produit
+   - id (PK, AUTO_INCREMENT)
+   - nom_produit (VARCHAR 255)
+   - description (TEXT, NULL)
+   - prix_vente (DECIMAL 10,2)
+   - image_url (VARCHAR 255, NULL)
+
+5. rayon
+   - id (PK, AUTO_INCREMENT)
+   - nom_rayon (VARCHAR 100)
+   - description (TEXT, NULL)
+
+6. stock
+   - id (PK, AUTO_INCREMENT)
+   - rayon_id (FK → rayon.id)
+   - produit_id (FK → produit.id)
+   - lieu_stockage (VARCHAR 100)
+   - quantite_disponible (INT)
+
+7. composer
+   - id (PK, AUTO_INCREMENT)
+   - commande_id (FK → commande.id)
+   - produit_id (FK → produit.id)
+   - quantite (INT)
+   - prix_unitaire (DECIMAL 10,2)
+   - sous_total (DECIMAL 10,2)
+
+
+=== ROUTES DISPONIBLES ===
+
+1. Page d'accueil :
+   URL : /
+   Route : app_home
+   Controller : HomeController
+
+2. Inscription :
+   URL : /register
+   Route : app_register
+   Controller : RegistrationController
+
+3. Connexion :
+   URL : /login
+   Route : app_login
+   Controller : SecurityController
+
+4. Déconnexion :
+   URL : /logout
+   Route : app_logout
+
+
+=== COMMANDES UTILES SUPPLÉMENTAIRES ===
+
+Créer un nouveau controller :
+php bin/console make:controller
+
+Créer un formulaire :
+php bin/console make:form
+
+Créer un CRUD complet :
+php bin/console make:crud
+
+Vider le cache :
+php bin/console cache:clear
+
+Lancer le serveur de développement :
+symfony server:start
+OU
+php -S localhost:8000 -t public/
+
+Voir toutes les routes :
+php bin/console debug:router
+
+
+=== ORDRE D'EXÉCUTION RECOMMANDÉ ===
+
+1. php bin/console doctrine:database:create ✅
+2. php bin/console make:migration ✅
+3. php bin/console doctrine:migrations:migrate ✅
+4. php bin/console doctrine:schema:validate ✅
+5. php bin/console make:auth ✅
+6. php bin/console make:registration-form ✅
+7. php bin/console make:controller Home ✅
+
+
+=== JOURNAL DES COMMANDES EXÉCUTÉES ===
+
+Date: 2026-02-10
+
+1. php bin/console doctrine:database:create
+   Résultat: Created database `ap4all4sportweb` for connection named default
+
+2. php bin/console make:migration
+   Résultat: created: migrations/Version20260210075253.php
+
+3. php bin/console doctrine:migrations:migrate --no-interaction
+   Résultat: Successfully migrated to version: DoctrineMigrations\Version20260210075253
+   Détails: 1 migration exécutée, 15 requêtes SQL, 7 tables créées
+
+4. php bin/console doctrine:schema:validate
+   Résultat: [OK] The mapping files are correct.
+            [OK] The database schema is in sync with the mapping files.
+
+5. php bin/console doctrine:mapping:info
+   Résultat: Found 7 mapped entities:
+            - App\Entity\Adresse
+            - App\Entity\Client
+            - App\Entity\Commande
+            - App\Entity\Composer
+            - App\Entity\Produit
+            - App\Entity\Rayon
+            - App\Entity\Stock
+
+6. php bin/console make:auth
+   Résultat: Système d'authentification créé avec succès
+   Fichiers créés:
+            - src/Security/LoginAuthenticator.php
+            - src/Controller/SecurityController.php
+            - templates/security/login.html.twig
+
+7. php bin/console make:registration-form
+   Résultat: Formulaire d'inscription créé avec succès
+   Fichiers créés:
+            - src/Form/RegistrationFormType.php
+            - src/Controller/RegistrationController.php
+            - templates/registration/register.html.twig
+
+8. php bin/console make:controller Home
+   Résultat: Contrôleur de page d'accueil créé
+   Fichiers créés:
+            - src/Controller/HomeController.php
+            - templates/home/index.html.twig
+
+
+=== MODIFICATIONS MANUELLES EFFECTUÉES ===
+
+1. Entité Client (src/Entity/Client.php)
+   - Implémentation de UserInterface et PasswordAuthenticatedUserInterface
+   - Ajout des méthodes : getUserIdentifier(), getRoles(), getPassword(), eraseCredentials()
+   - L'entité Client sert maintenant d'utilisateur pour l'authentification
+
+2. Configuration de sécurité (config/packages/security.yaml)
+   - Configuration du provider pour utiliser l'entité Client
+   - Configuration de l'authenticator personnalisé
+   - Configuration du logout et remember_me
+
+3. LoginAuthenticator (src/Security/LoginAuthenticator.php)
+   - Redirection vers la page d'accueil (app_home) après connexion réussie
+
+4. RegistrationFormType (src/Form/RegistrationFormType.php)
+   - Ajout des champs : nom, prenom, telephone
+   - Ajout des champs d'adresse : rue, code_postal, ville, pays, complement
+   - Traduction des labels et messages en français
+
+5. RegistrationController (src/Controller/RegistrationController.php)
+   - Création automatique de l'adresse lors de l'inscription
+   - Association de l'adresse au client
+   - Utilisation de setMotDePasse() au lieu de setMot_de_passe()
+
+
+=== FONCTIONNALITÉS DISPONIBLES ===
+
+✅ Base de données créée et configurée
+✅ 7 entités créées selon le MCD
+✅ Système d'authentification complet :
+   - Inscription avec création d'adresse
+   - Connexion avec remember me
+   - Déconnexion
+   - Hashage automatique des mots de passe
+   - Protection CSRF
+✅ Page d'accueil
+✅ Redirection automatique après connexion/inscription
+
+
+=== PROCHAINES ÉTAPES SUGGÉRÉES ===
+
+1. Personnaliser les templates Twig : ✅ FAIT
+   - templates/registration/register.html.twig
+   - templates/security/login.html.twig
+   - templates/home/index.html.twig
+
+2. Ajouter du CSS/Bootstrap pour améliorer l'interface : ✅ FAIT
+
+3. Créer les CRUDs pour les produits, commandes, etc. :
+   php bin/console make:crud Produit
+   php bin/console make:crud Commande
+   php bin/console make:crud Stock
+   php bin/console make:crud Rayon
+
+4. Configurer les contrôles d'accès dans security.yaml
+
+5. Tester l'inscription et la connexion :
+   - Démarrer le serveur : symfony server:start
+   - Ouvrir le navigateur : http://localhost:8000
+
+
+=== DESIGN ET INTERFACE UTILISATEUR ===
+
+ÉTAPE 12 : CRÉATION DES FEUILLES DE STYLE CSS
+----------------------------------------------
+
+Fichiers CSS créés :
+
+1. assets/styles/auth.css
+   - Design moderne et épuré pour les pages d'authentification
+   - Formulaires avec animations et transitions
+   - Design responsive (mobile-friendly)
+   - Dégradé de couleurs violet/bleu professionnel
+   - Champs de formulaire avec focus states
+   - Grille pour l'adresse
+   - Animations de validation
+
+2. assets/styles/home.css
+   - Design complet pour la page d'accueil
+   - Navigation sticky avec logo
+   - Hero section avec dégradé et animations
+   - Section features avec cartes interactives
+   - Section produits avec grille responsive
+   - Footer complet avec liens
+   - Section d'informations utilisateur
+   - Design entièrement responsive
+
+✅ DESIGN PROFESSIONNEL CRÉÉ
+
+
+ÉTAPE 13 : MISE À JOUR DES TEMPLATES TWIG
+------------------------------------------
+
+Templates mis à jour avec le nouveau design :
+
+1. templates/registration/register.html.twig
+   - Formulaire d'inscription complet et stylisé
+   - Tous les champs (nom, prénom, email, téléphone, mot de passe)
+   - Section adresse avec grille responsive
+   - Checkbox pour accepter les CGU
+   - Lien vers la page de connexion
+   - Placeholders informatifs
+
+2. templates/security/login.html.twig
+   - Formulaire de connexion épuré
+   - Champs email et mot de passe
+   - Option "Se souvenir de moi"
+   - Protection CSRF
+   - Gestion des erreurs
+   - Lien vers l'inscription
+
+3. templates/home/index.html.twig
+   - Navigation complète avec menu
+   - Hero section dynamique (change si l'utilisateur est connecté)
+   - Section d'informations utilisateur (visible si connecté)
+   - Section features avec 6 cartes
+   - Section produits avec 4 produits d'exemple
+   - Footer complet avec liens
+   - Responsive design complet
+
+✅ TEMPLATES PROFESSIONNELS CRÉÉS
+
+
+=== CARACTÉRISTIQUES DU DESIGN ===
+
+🎨 Palette de couleurs :
+   - Couleur principale : Dégradé violet/bleu (#667eea → #764ba2)
+   - Arrière-plan : Gris clair (#f5f7fa)
+   - Texte : Gris foncé (#333)
+   - Blanc pour les cartes
+
+✨ Animations :
+   - Slide up au chargement des formulaires
+   - Fade in pour les éléments du hero
+   - Hover effects sur les boutons et cartes
+   - Transitions fluides (0.3s)
+   - Shake animation pour les erreurs
+
+📱 Responsive :
+   - Mobile first approach
+   - Breakpoints adaptés (768px, 576px)
+   - Navigation responsive
+   - Grilles adaptatives
+
+🔧 Composants :
+   - Boutons avec hover effects
+   - Cartes avec ombres et transitions
+   - Formulaires avec focus states
+   - Navigation sticky
+   - Footer multi-colonnes
+
+
+=== PAGES DISPONIBLES ===
+
+✅ / (app_home) - Page d'accueil
+   - Navigation complète
+   - Hero dynamique selon l'état de connexion
+   - Informations utilisateur si connecté
+   - 6 features
+   - 4 produits
+   - Footer complet
+
+✅ /register (app_register) - Inscription
+   - Formulaire complet avec adresse
+   - Design moderne et épuré
+   - Validation en temps réel
+   - Lien vers connexion
+
+✅ /login (app_login) - Connexion
+   - Formulaire simple et efficace
+   - Remember me
+   - Lien vers inscription
+
+✅ /logout (app_logout) - Déconnexion
+
+
+=== CRÉATION DE LA PAGE PRODUITS AVEC RECHERCHE ET FILTRAGE ===
+
+ÉTAPE 14 : INSTALLATION DU BUNDLE DOCTRINE FIXTURES
+----------------------------------------------------
+composer require --dev orm-fixtures
+
+✅ EXÉCUTÉE AVEC SUCCÈS
+Permet de charger des données de test dans la base de données
+
+
+ÉTAPE 15 : CRÉATION DU CRUD PRODUIT
+------------------------------------
+php bin/console make:crud Produit
+
+Options :
+- Nom du controller : ProduitController (par défaut)
+- Générer tests PHPUnit : no
+
+✅ EXÉCUTÉE AVEC SUCCÈS
+Fichiers créés :
+- src/Controller/ProduitController.php
+- src/Form/ProduitType.php
+- templates/produit/_delete_form.html.twig
+- templates/produit/_form.html.twig
+- templates/produit/edit.html.twig
+- templates/produit/index.html.twig
+- templates/produit/new.html.twig
+- templates/produit/show.html.twig
+
+
+ÉTAPE 16 : CRÉATION DES FIXTURES (DONNÉES DE TEST)
+---------------------------------------------------
+Fichier créé : src/DataFixtures/AppFixtures.php
+
+Contenu :
+- 6 rayons (Football, Basketball, Tennis, Running, Fitness, Natation)
+- 22 produits répartis dans les rayons
+- Chaque produit a un stock associé avec quantité
+
+✅ DONNÉES CRÉÉES
+
+
+ÉTAPE 17 : CHARGEMENT DES FIXTURES EN BASE DE DONNÉES
+------------------------------------------------------
+php bin/console doctrine:fixtures:load --no-interaction
+
+✅ EXÉCUTÉE AVEC SUCCÈS
+Résultat : 6 rayons + 22 produits + 22 stocks insérés dans la base
+
+
+ÉTAPE 18 : MODIFICATION DU PRODUITCONTROLLER
+---------------------------------------------
+Fichier : src/Controller/ProduitController.php
+
+Modifications apportées :
+1. Ajout de RayonRepository dans les paramètres
+2. Récupération des paramètres de recherche (GET)
+   - search : texte de recherche
+   - rayon : filtre par catégorie
+
+3. Création d'un QueryBuilder pour filtrer :
+   - Recherche dans nom_produit ET description
+   - Filtre par rayon (jointure avec stock)
+
+4. Passage des variables au template :
+   - produits : résultats filtrés
+   - rayons : tous les rayons pour le select
+   - currentSearch : valeur de recherche actuelle
+   - currentRayon : rayon sélectionné
+
+✅ CONTROLLER MODIFIÉ AVEC SUCCÈS
+
+
+ÉTAPE 19 : CRÉATION DU CSS POUR LA PAGE PRODUITS
+-------------------------------------------------
+Fichier créé : assets/styles/produits.css
+
+Fonctionnalités CSS :
+- Navigation sticky
+- Section de recherche et filtres stylisée
+- Grille de produits responsive
+- Cards produits avec hover effects
+- Badges de stock (vert/orange/rouge)
+- Design "no results" si aucun produit
+- 100% responsive (mobile, tablette, desktop)
+
+✅ CSS PRODUITS CRÉÉ
+
+
+ÉTAPE 20 : CRÉATION DU CSS POUR LA PAGE DÉTAIL PRODUIT
+-------------------------------------------------------
+Fichier créé : assets/styles/produit-detail.css
+
+Fonctionnalités CSS :
+- Card de détail en 2 colonnes (image + contenu)
+- Animations au chargement (slideUp)
+- Section image avec dégradé
+- Badges de stock stylisés
+- Meta informations en grille
+- Boutons d'action stylisés
+- Breadcrumb de navigation
+- 100% responsive
+
+✅ CSS DÉTAIL PRODUIT CRÉÉ
+
+
+ÉTAPE 21 : CRÉATION DU TEMPLATE INDEX PRODUITS
+-----------------------------------------------
+Fichier : templates/produit/index.html.twig
+
+Fonctionnalités :
+1. Navigation avec liens Accueil/Produits/Connexion
+2. Header avec titre et description
+3. Formulaire de recherche et filtre :
+   - Champ de recherche texte
+   - Select pour filtrer par rayon
+   - Bouton rechercher
+   - Bouton réinitialiser (si filtres actifs)
+
+4. Affichage du nombre de résultats
+5. Grille de produits avec :
+   - Icône emoji selon le type
+   - Badge "Stock limité" si < 20
+   - Catégorie du rayon
+   - Nom et description (tronquée à 80 caractères)
+   - Prix et stock
+   - Bouton "Voir les détails"
+
+6. Message "Aucun produit trouvé" si résultats vides
+
+✅ TEMPLATE INDEX CRÉÉ
+
+
+ÉTAPE 22 : CRÉATION DU TEMPLATE SHOW PRODUIT
+---------------------------------------------
+Fichier : templates/produit/show.html.twig
+
+Fonctionnalités :
+1. Navigation identique
+2. Breadcrumb de navigation (Accueil > Produits > Nom produit)
+3. Card de détail produit :
+   - Gauche : Grande icône emoji + badge stock limité
+   - Droite : Informations détaillées
+     * Badge catégorie
+     * Titre produit (grand)
+     * Description complète
+     * Prix (très grand, en dégradé)
+     * Info stock avec icône et couleur
+     * Meta informations (lieu stockage, livraison)
+     * Boutons : Ajouter au panier + Retour
+
+4. Gestion des états de stock :
+   - En stock (> 20) : vert
+   - Stock limité (1-20) : orange
+   - Rupture (0) : rouge, bouton désactivé
+
+✅ TEMPLATE SHOW CRÉÉ
+
+
+ÉTAPE 23 : MISE À JOUR DE LA PAGE D'ACCUEIL
+--------------------------------------------
+Fichier : templates/home/index.html.twig
+
+Modifications :
+- Suppression de la section produits
+- Ajout du lien "Produits" dans la navigation
+- Bouton "Voir les produits" redirige vers /produit
+- Liens du footer mis à jour
+
+✅ PAGE D'ACCUEIL MISE À JOUR
+
+
+=== EXPLICATION DÉTAILLÉE DE A À Z ===
+
+📚 COMMENT REPRODUIRE CETTE FONCTIONNALITÉ :
+
+1️⃣ INSTALLER LES DÉPENDANCES
+   composer require --dev orm-fixtures
+   → Permet de charger des données de test
+
+2️⃣ CRÉER LE CRUD
+   php bin/console make:crud NomEntite
+   → Génère automatiquement :
+     * Controller avec toutes les actions (index, new, show, edit, delete)
+     * Formulaire
+     * Templates de base
+
+3️⃣ CRÉER LES FIXTURES
+   → Fichier : src/DataFixtures/AppFixtures.php
+   → Structure :
+     class AppFixtures extends Fixture {
+         public function load(ObjectManager $manager): void {
+             // Créer des objets
+             $objet = new Entite();
+             $objet->setPropriet('valeur');
+             $manager->persist($objet);
+
+             // Répéter pour tous les objets
+             $manager->flush(); // Sauvegarder
+         }
+     }
+
+4️⃣ CHARGER LES FIXTURES
+   php bin/console doctrine:fixtures:load
+   → Attention : EFFACE toutes les données existantes !
+   → Utiliser --append pour ajouter sans effacer
+
+5️⃣ MODIFIER LE CONTROLLER POUR FILTRAGE
+   Dans la méthode index() :
+
+   a) Récupérer les paramètres :
+      $search = $request->query->get('search', '');
+      $rayonId = $request->query->get('rayon', '');
+
+   b) Créer un QueryBuilder :
+      $qb = $repository->createQueryBuilder('p')
+          ->leftJoin('p.relation', 'r');
+
+   c) Ajouter des conditions :
+      if ($search) {
+          $qb->andWhere('p.nom LIKE :search')
+             ->setParameter('search', '%' . $search . '%');
+      }
+
+   d) Exécuter et récupérer :
+      $produits = $qb->getQuery()->getResult();
+
+6️⃣ CRÉER LES CSS
+   → Créer fichiers dans assets/styles/
+   → Utiliser des classes cohérentes
+   → Penser responsive (media queries)
+
+7️⃣ CRÉER LES TEMPLATES
+   → Étendre base.html.twig
+   → Charger les CSS avec asset()
+   → Utiliser Twig pour :
+     * Boucles : {% for item in items %}
+     * Conditions : {% if condition %}
+     * Filtres : {{ texte|length }}
+
+8️⃣ LIER LES ROUTES
+   → Les routes sont générées automatiquement par make:crud
+   → Format : app_entite_action
+   → Utiliser {{ path('nom_route', {paramètre: valeur}) }}
+
+
+=== ROUTES CRÉÉES ===
+
+✅ /produit - Liste des produits avec recherche/filtre
+✅ /produit/{id} - Détail d'un produit
+✅ /produit/new - Créer un produit (admin)
+✅ /produit/{id}/edit - Modifier un produit (admin)
+
+
+=== DONNÉES EN BASE ===
+
+6 RAYONS :
+1. Football (4 produits)
+2. Basketball (3 produits)
+3. Tennis (3 produits)
+4. Running (4 produits)
+5. Fitness (4 produits)
+6. Natation (4 produits)
+
+22 PRODUITS au total avec prix de 8.99€ à 199.99€
+
+
+=== FONCTIONNALITÉS IMPLÉMENTÉES ===
+
+✅ Recherche par texte (nom + description)
+✅ Filtrage par catégorie (rayon)
+✅ Affichage du nombre de résultats
+✅ Bouton réinitialiser les filtres
+✅ Gestion du stock (couleurs selon quantité)
+✅ Badges visuels (stock limité, catégorie)
+✅ Page de détail complète
+✅ Breadcrumb de navigation
+✅ Design professionnel et responsive
+✅ Animations et transitions
+✅ Icônes emoji selon le type de produit

@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Produits - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/produits.css') }}">
+{% endblock %}
+
+{% block body %}
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ path('app_home') }}" class="logo">🏃 All4Sport</a>
+        <ul class="nav-menu">
+            <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+            <li><a href="{{ path('app_produit_index') }}" class="nav-link">Produits</a></li>
+            {% if app.user %}
+                <li><a href="{{ path('app_logout') }}" class="btn-nav">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{{ path('app_login') }}" class="btn-nav">Connexion</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1>🛍️ Notre Catalogue de Produits</h1>
+    <p>Découvrez notre sélection d'équipements sportifs de qualité</p>
+</div>
+
+<!-- Main Container -->
+<div class="products-container">
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <form method="GET" action="{{ path('app_produit_index') }}">
+            <div class="search-filter-grid">
+                <div class="form-group">
+                    <label for="search">🔍 Rechercher un produit</label>
+                    <input type="text"
+                           id="search"
+                           name="search"
+                           class="search-input"
+                           placeholder="Nom du produit, description..."
+                           value="{{ currentSearch }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="rayon">📂 Filtrer par catégorie</label>
+                    <select id="rayon" name="rayon" class="filter-select">
+                        <option value="">Toutes les catégories</option>
+                        {% for rayon in rayons %}
+                            <option value="{{ rayon.id }}" {% if currentRayon == rayon.id %}selected{% endif %}>
+                                {{ rayon.nomRayon }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn-search">Rechercher</button>
+                </div>
+            </div>
+        </form>
+
+        {% if currentSearch or currentRayon %}
+            <div style="margin-top: 1rem;">
+                <a href="{{ path('app_produit_index') }}" class="btn-reset">Réinitialiser les filtres</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Products Stats -->
+    <div class="products-stats">
+        <div class="results-count">
+            <strong>{{ produits|length }}</strong> produit(s) trouvé(s)
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    {% if produits|length > 0 %}
+        <div class="products-grid">
+            {% for produit in produits %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% set icons = {
+                            'football': '⚽',
+                            'basketball': '��',
+                            'tennis': '🎾',
+                            'running': '👟',
+                            'yoga': '🧘',
+                            'dumbbells': '���️',
+                            'swim': '🏊'
+                        } %}
+
+                        {% set icon = '🏆' %}
+                        {% for key, emoji in icons %}
+                            {% if key in produit.imageUrl|lower %}
+                                {% set icon = emoji %}
+                            {% endif %}
+                        {% endfor %}
+
+                        <span style="font-size: 4rem;">{{ icon }}</span>
+
+                        {% if produit.stocks|length > 0 %}
+                            {% set stock = produit.stocks[0] %}
+                            {% if stock.quantiteDisponible < 20 %}
+                                <div class="product-badge">Stock limité!</div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="product-info">
+                        {% if produit.stocks|length > 0 %}
+                            <div class="product-category">
+                                {{ produit.stocks[0].rayon.nomRayon }}
+                            </div>
+                        {% endif %}
+
+                        <h3>{{ produit.nomProduit }}</h3>
+
+                        <p class="product-description">
+                            {{ produit.description|length > 80 ? produit.description|slice(0, 80) ~ '...' : produit.description }}
+                        </p>
+
+                        <div class="product-footer">
+                            <div class="product-price">{{ produit.prixVente }} €</div>
+
+                            {% if produit.stocks|length > 0 %}
+                                {% set stock = produit.stocks[0] %}
+                                {% if stock.quantiteDisponible > 20 %}
+                                    <div class="product-stock">✓ En stock ({{ stock.quantiteDisponible }})</div>
+                                {% elseif stock.quantiteDisponible > 0 %}
+                                    <div class="product-stock low">⚠ Stock limité ({{ stock.quantiteDisponible }})</div>
+                                {% else %}
+                                    <div class="product-stock out">✗ Rupture</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn-view">
+                            Voir les détails
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">
+            <div class="no-results-icon">😕</div>
+            <h2>Aucun produit trouvé</h2>
+            <p>Essayez de modifier vos critères de recherche ou de filtrage</p>
+            <a href="{{ path('app_produit_index') }}" class="btn-search">Voir tous les produits</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
