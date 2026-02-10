@@ -99,4 +99,7 @@ Création des pages:
 - design page vente
 
 03/02:
-- 
+- Correction de bugs qui pouvaient bloquer la suite des tâches
+
+10/02:
+- redefinition des tâches et du projet
