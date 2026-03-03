@@ -645,111 +645,50 @@ Modifications :
 ✅ PAGE D'ACCUEIL MISE À JOUR
 
 
-=== EXPLICATION DÉTAILLÉE DE A À Z ===
+=== CRÉATION DU SYSTÈME PANIER ===
 
-📚 COMMENT REPRODUIRE CETTE FONCTIONNALITÉ :
-
-1️⃣ INSTALLER LES DÉPENDANCES
-   composer require --dev orm-fixtures
-   → Permet de charger des données de test
-
-2️⃣ CRÉER LE CRUD
-   php bin/console make:crud NomEntite
-   → Génère automatiquement :
-     * Controller avec toutes les actions (index, new, show, edit, delete)
-     * Formulaire
-     * Templates de base
-
-3️⃣ CRÉER LES FIXTURES
-   → Fichier : src/DataFixtures/AppFixtures.php
-   → Structure :
-     class AppFixtures extends Fixture {
-         public function load(ObjectManager $manager): void {
-             // Créer des objets
-             $objet = new Entite();
-             $objet->setPropriet('valeur');
-             $manager->persist($objet);
-
-             // Répéter pour tous les objets
-             $manager->flush(); // Sauvegarder
-         }
-     }
-
-4️⃣ CHARGER LES FIXTURES
-   php bin/console doctrine:fixtures:load
-   → Attention : EFFACE toutes les données existantes !
-   → Utiliser --append pour ajouter sans effacer
-
-5️⃣ MODIFIER LE CONTROLLER POUR FILTRAGE
-   Dans la méthode index() :
-
-   a) Récupérer les paramètres :
-      $search = $request->query->get('search', '');
-      $rayonId = $request->query->get('rayon', '');
-
-   b) Créer un QueryBuilder :
-      $qb = $repository->createQueryBuilder('p')
-          ->leftJoin('p.relation', 'r');
-
-   c) Ajouter des conditions :
-      if ($search) {
-          $qb->andWhere('p.nom LIKE :search')
-             ->setParameter('search', '%' . $search . '%');
-      }
-
-   d) Exécuter et récupérer :
-      $produits = $qb->getQuery()->getResult();
-
-6️⃣ CRÉER LES CSS
-   → Créer fichiers dans assets/styles/
-   → Utiliser des classes cohérentes
-   → Penser responsive (media queries)
-
-7️⃣ CRÉER LES TEMPLATES
-   → Étendre base.html.twig
-   → Charger les CSS avec asset()
-   → Utiliser Twig pour :
-     * Boucles : {% for item in items %}
-     * Conditions : {% if condition %}
-     * Filtres : {{ texte|length }}
-
-8️⃣ LIER LES ROUTES
-   → Les routes sont générées automatiquement par make:crud
-   → Format : app_entite_action
-   → Utiliser {{ path('nom_route', {paramètre: valeur}) }}
+ÉTAPE 11 : CRÉATION DU SERVICE PANIER
+--------------------------------------
+Fichier créé manuellement (pas de commande make:) :
+- src/Service/PanierService.php
+Logique : Panier stocké en SESSION (clé 'panier'), pas en base de données.
+Méthodes : add(), diminuer(), supprimer(), vider(), getPanierComplet(), getTotal(), getNombreArticles()
 
 
-=== ROUTES CRÉÉES ===
+ÉTAPE 12 : CRÉATION DU CONTRÔLEUR PANIER
+-----------------------------------------
+Fichier créé manuellement :
+- src/Controller/PanierController.php
+Routes créées :
+  GET  /panier                    → app_panier_index       (affichage panier)
+  POST /panier/ajouter/{id}       → app_panier_add         (ajouter un produit)
+  POST /panier/diminuer/{id}      → app_panier_decrease    (diminuer quantité)
+  POST /panier/supprimer/{id}     → app_panier_remove      (supprimer un produit)
+  POST /panier/vider              → app_panier_clear       (vider le panier)
+  GET|POST /panier/valider        → app_panier_checkout    (validation commande, ROLE_USER requis)
+  GET  /panier/confirmation/{id}  → app_panier_confirmation (confirmation commande, ROLE_USER requis)
 
-✅ /produit - Liste des produits avec recherche/filtre
-✅ /produit/{id} - Détail d'un produit
-✅ /produit/new - Créer un produit (admin)
-✅ /produit/{id}/edit - Modifier un produit (admin)
-
-
-=== DONNÉES EN BASE ===
-
-6 RAYONS :
-1. Football (4 produits)
-2. Basketball (3 produits)
-3. Tennis (3 produits)
-4. Running (4 produits)
-5. Fitness (4 produits)
-6. Natation (4 produits)
-
-22 PRODUITS au total avec prix de 8.99€ à 199.99€
+Note : La validation du panier crée une vraie entité Commande + entités Composer en base de données.
 
 
-=== FONCTIONNALITÉS IMPLÉMENTÉES ===
+ÉTAPE 13 : CRÉATION DES TEMPLATES PANIER
+-----------------------------------------
+Fichiers créés manuellement :
+- templates/panier/index.html.twig       (affichage du panier)
+- templates/panier/checkout.html.twig    (page de validation avec choix livraison)
+- templates/panier/confirmation.html.twig (page de confirmation post-commande)
 
-✅ Recherche par texte (nom + description)
-✅ Filtrage par catégorie (rayon)
-✅ Affichage du nombre de résultats
-✅ Bouton réinitialiser les filtres
-✅ Gestion du stock (couleurs selon quantité)
-✅ Badges visuels (stock limité, catégorie)
-✅ Page de détail complète
-✅ Breadcrumb de navigation
-✅ Design professionnel et responsive
-✅ Animations et transitions
-✅ Icônes emoji selon le type de produit
+
+ÉTAPE 14 : CRÉATION DU CSS PANIER
+-----------------------------------
+Fichier créé manuellement (CSS dédié, thème sombre) :
+- assets/styles/panier.css
+Utilise les variables CSS de theme-dark.css
+
+
+ÉTAPE 15 : MISE À JOUR DES NAVBARS
+------------------------------------
+Fichiers modifiés pour ajouter le lien 🛒 Panier dans la navigation :
+- templates/home/index.html.twig
+- templates/produit/index.html.twig
+- templates/produit/show.html.twig (+ bouton "Ajouter au panier" fonctionnel via POST)
