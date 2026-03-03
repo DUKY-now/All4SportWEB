@@ -5,12 +5,46 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/base.css') }}">
             <link rel="stylesheet" href="{{ asset('styles/theme-dark.css') }}">
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">🏃 All4Sport</div>
+        <ul class="nav-menu">
+            <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+            <li><a href="{{ path('app_produit_index') }}" class="nav-link">Produits</a></li>
+            
+            {# <li><a href="{{ path('app_gestion') }}" class="nav-link">gestion produit</a></li> #}
+            <li><a href="#" class="nav-link">À propos</a></li>
+            {% if app.user %}
+                <li><a href="{{ path('app_account') }}" class="nav-link">Mon compte</a></li>
+                <li><a href="{{ path('app_panier_index') }}" class="nav-link">🛒 Panier</a></li>
+                {# <li>
+                    <a href="{{ path('app_panier_index') }}" class="nav-link nav-link-cart active">
+                        🛒 Panier {% if count > 0 %}<span class="cart-badge">{{ count }}</span>{% endif %}
+                    </a>
+                </li> #}
+                <li><a href="{{ path('app_logout') }}" class="btn-nav btn-outline">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{{ path('app_panier_index') }}" class="nav-link">🛒 Panier</a></li>
+                {# <li>    
+                    <a href="{{ path('app_panier_index') }}" class="nav-link nav-link-cart active">
+                        🛒 Panier {% if count > 0 %}<span class="cart-badge">{{ count }}</span>{% endif %}
+                    </a>
+                 </li> #}
+                <li><a href="{{ path('app_login') }}" class="btn-nav btn-outline">Connexion</a></li>
+                <li><a href="{{ path('app_register') }}" class="btn-nav">Inscription</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
     </head>
     <body>
         {% block body %}{% endblock %}
