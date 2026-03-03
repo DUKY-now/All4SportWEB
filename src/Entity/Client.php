@@ -48,9 +48,13 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: LignePanier::class, cascade: ['persist', 'remove'])]
+    private Collection $lignesPanier;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->lignesPanier = new ArrayCollection();
         $this->date_inscription = new \DateTime();
         $this->role = 'ROLE_USER'; // Rôle par défaut
     }
@@ -179,6 +183,35 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->commandes->removeElement($commande)) {
             if ($commande->getClient() === $this) {
                 $commande->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LignePanier>
+     */
+    public function getLignesPanier(): Collection
+    {
+        return $this->lignesPanier;
+    }
+
+    public function addLignePanier(LignePanier $ligne): static
+    {
+        if (!$this->lignesPanier->contains($ligne)) {
+            $this->lignesPanier->add($ligne);
+            $ligne->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLignePanier(LignePanier $ligne): static
+    {
+        if ($this->lignesPanier->removeElement($ligne)) {
+            if ($ligne->getClient() === $this) {
+                $ligne->setClient(null);
             }
         }
 

@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Valider ma commande - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/panier.css') }}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ path('app_home') }}" class="logo">🏃 All4Sport</a>
+        <ul class="nav-menu">
+            <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+            <li><a href="{{ path('app_produit_index') }}" class="nav-link">Produits</a></li>
+            <li><a href="{{ path('app_account') }}" class="nav-link">Mon compte</a></li>
+            <li><a href="{{ path('app_panier_index') }}" class="nav-link">🛒 Panier</a></li>
+            <li><a href="{{ path('app_logout') }}" class="btn-nav btn-outline">Déconnexion</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="panier-wrapper">
+
+    <!-- Breadcrumb -->
+    <div class="checkout-breadcrumb">
+        <a href="{{ path('app_panier_index') }}">🛒 Panier</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-active">Validation</span>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-disabled">Confirmation</span>
+    </div>
+
+    <div class="panier-header">
+        <h1 class="panier-title">✅ Valider ma commande</h1>
+        <p class="panier-subtitle">Vérifiez votre commande avant de confirmer</p>
+    </div>
+
+    <div class="checkout-grid">
+
+        <!-- Récap produits -->
+        <div class="checkout-left">
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">📦 Articles commandés</h2>
+                {% for item in items %}
+                <div class="checkout-item">
+                    <div class="checkout-item-name">
+                        <strong>{{ item.produit.nomProduit }}</strong>
+                        <span class="checkout-item-qty">× {{ item.quantite }}</span>
+                    </div>
+                    <div class="checkout-item-price">{{ item.sousTotal }} €</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Adresse de livraison -->
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">📍 Adresse de livraison</h2>
+                <div class="checkout-address">
+                    <strong>{{ app.user.prenom }} {{ app.user.nom }}</strong><br>
+                    {% if app.user.adresse %}
+                        {{ app.user.adresse.rue }}<br>
+                        {{ app.user.adresse.codePostal }} {{ app.user.adresse.ville }}<br>
+                        {{ app.user.adresse.pays }}
+                    {% else %}
+                        <span class="text-muted">Aucune adresse enregistrée</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de validation -->
+        <aside class="checkout-right">
+            <form action="{{ path('app_panier_checkout') }}" method="POST" class="checkout-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+
+                <h2 class="checkout-section-title">🚚 Mode de livraison</h2>
+
+                <div class="delivery-options">
+                    <label class="delivery-option">
+                        <input type="radio" name="mode_livraison" value="standard" checked>
+                        <div class="delivery-option-content">
+                            <span class="delivery-name">📦 Standard</span>
+                            <span class="delivery-delay">3-5 jours ouvrés</span>
+                            <span class="delivery-price delivery-free">Gratuit</span>
+                        </div>
+                    </label>
+                    <label class="delivery-option">
+                        <input type="radio" name="mode_livraison" value="express">
+                        <div class="delivery-option-content">
+                            <span class="delivery-name">⚡ Express</span>
+                            <span class="delivery-delay">24-48h</span>
+                            <span class="delivery-price">+ 4,99 €</span>
+                        </div>
+                    </label>
+                    <label class="delivery-option">
+                        <input type="radio" name="mode_livraison" value="retrait">
+                        <div class="delivery-option-content">
+                            <span class="delivery-name">🏪 Retrait en magasin</span>
+                            <span class="delivery-delay">Dès demain</span>
+                            <span class="delivery-price delivery-free">Gratuit</span>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="summary-separator" style="margin: 1.5rem 0;"></div>
+
+                <div class="checkout-total-line">
+                    <span>Sous-total</span>
+                    <span>{{ total }} €</span>
+                </div>
+                <div class="checkout-total-line">
+                    <span>Livraison</span>
+                    <span class="delivery-free">Gratuite</span>
+                </div>
+                <div class="checkout-grand-total">
+                    <span>Total</span>
+                    <span>{{ total }} €</span>
+                </div>
+
+                <button type="submit" class="btn-checkout">
+                    🛍️ Confirmer la commande
+                </button>
+
+                <a href="{{ path('app_panier_index') }}" class="btn-back-cart">← Retour au panier</a>
+            </form>
+        </aside>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <p class="footer-bottom">© 2026 All4Sport – Tous droits réservés</p>
+    </div>
+</footer>
+{% endblock %}
+

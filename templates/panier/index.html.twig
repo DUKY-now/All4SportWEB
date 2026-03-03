@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/panier.css') }}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ path('app_home') }}" class="logo">🏃 All4Sport</a>
+        <ul class="nav-menu">
+            <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
+            <li><a href="{{ path('app_produit_index') }}" class="nav-link">Produits</a></li>
+            {% if app.user %}
+                <li><a href="{{ path('app_account') }}" class="nav-link">Mon compte</a></li>
+                <li>
+                    <a href="{{ path('app_panier_index') }}" class="nav-link nav-link-cart active">
+                        🛒 Panier {% if count > 0 %}<span class="cart-badge">{{ count }}</span>{% endif %}
+                    </a>
+                </li>
+                <li><a href="{{ path('app_logout') }}" class="btn-nav btn-outline">Déconnexion</a></li>
+            {% else %}
+                <li>
+                    <a href="{{ path('app_panier_index') }}" class="nav-link nav-link-cart active">
+                        🛒 Panier {% if count > 0 %}<span class="cart-badge">{{ count }}</span>{% endif %}
+                    </a>
+                </li>
+                <li><a href="{{ path('app_login') }}" class="btn-nav btn-outline">Connexion</a></li>
+                <li><a href="{{ path('app_register') }}" class="btn-nav">Inscription</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<div class="panier-wrapper">
+    <div class="panier-header">
+        <h1 class="panier-title">🛒 Mon Panier</h1>
+        <p class="panier-subtitle">
+            {% if count > 0 %}
+                {{ count }} article{{ count > 1 ? 's' : '' }} dans votre panier
+            {% else %}
+                Votre panier est vide
+            {% endif %}
+        </p>
+    </div>
+
+    {% for flash in app.flashes('success') %}
+        <div class="flash flash-success">✅ {{ flash }}</div>
+    {% endfor %}
+    {% for flash in app.flashes('info') %}
+        <div class="flash flash-info">ℹ️ {{ flash }}</div>
+    {% endfor %}
+    {% for flash in app.flashes('warning') %}
+        <div class="flash flash-warning">⚠️ {{ flash }}</div>
+    {% endfor %}
+    {% for flash in app.flashes('danger') %}
+        <div class="flash flash-danger">❌ {{ flash }}</div>
+    {% endfor %}
+
+    {% if items|length > 0 %}
+    <div class="panier-grid">
+
+        <!-- Liste des articles -->
+        <div class="panier-items">
+            {% for item in items %}
+            <div class="panier-item">
+                <div class="item-image">
+                    {% set icons = {
+                        'football': '⚽', 'basketball': '🏀', 'tennis': '🎾',
+                        'running': '👟', 'yoga': '🧘', 'dumbbells': '🏋️',
+                        'swim': '🏊', 'kettlebell': '💪', 'watch': '⌚', 'resistance': '🎯'
+                    } %}
+                    {% set icon = '🏆' %}
+                    {% for key, emoji in icons %}
+                        {% if key in item.produit.imageUrl|lower %}{% set icon = emoji %}{% endif %}
+                    {% endfor %}
+                    <span>{{ icon }}</span>
+                </div>
+
+                <div class="item-info">
+                    <div class="item-category">
+                        {% if item.produit.stocks|length > 0 %}
+                            {{ item.produit.stocks[0].rayon.nomRayon }}
+                        {% endif %}
+                    </div>
+                    <h3 class="item-name">{{ item.produit.nomProduit }}</h3>
+                    <p class="item-desc">
+                        {{ item.produit.description|length > 60 ? item.produit.description|slice(0,60) ~ '...' : item.produit.description }}
+                    </p>
+                    <div class="item-price-unit">{{ item.produit.prixVente }} € / unité</div>
+                </div>
+
+                <div class="item-controls">
+                    <div class="qty-control">
+                        <form action="{{ path('app_panier_decrease', {'id': item.produit.id}) }}" method="POST">
+                            <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+                            <button type="submit" class="qty-btn">−</button>
+                        </form>
+                        <span class="qty-value">{{ item.quantite }}</span>
+                        <form action="{{ path('app_panier_add', {'id': item.produit.id}) }}" method="POST">
+                            <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+                            <button type="submit" class="qty-btn">+</button>
+                        </form>
+                    </div>
+
+                    <div class="item-sous-total">{{ item.sousTotal }} €</div>
+
+                    <form action="{{ path('app_panier_remove', {'id': item.produit.id}) }}" method="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+                        <button type="submit" class="btn-remove" title="Supprimer">🗑️</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Vider le panier -->
+            <div class="panier-actions-bottom">
+                <a href="{{ path('app_produit_index') }}" class="btn-continue">← Continuer mes achats</a>
+                <form action="{{ path('app_panier_clear') }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+                    <button type="submit" class="btn-clear">🗑️ Vider le panier</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Récapitulatif -->
+        <aside class="panier-summary">
+            <h2 class="summary-title">Récapitulatif</h2>
+
+            <div class="summary-lines">
+                {% for item in items %}
+                <div class="summary-line">
+                    <span>{{ item.produit.nomProduit }} × {{ item.quantite }}</span>
+                    <span>{{ item.sousTotal }} €</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="summary-separator"></div>
+
+            <div class="summary-total">
+                <span>Total</span>
+                <span class="total-amount">{{ total }} €</span>
+            </div>
+
+            <div class="summary-delivery">
+                <span>🚚 Livraison</span>
+                <span class="delivery-free">Gratuite</span>
+            </div>
+
+            {% if app.user %}
+                <a href="{{ path('app_panier_checkout') }}" class="btn-checkout">
+                    Passer la commande →
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn-checkout btn-checkout-login">
+                    🔒 Se connecter pour commander
+                </a>
+                <p class="summary-login-hint">Vous devez être connecté pour valider votre commande.</p>
+            {% endif %}
+
+            <div class="summary-secure">
+                🔒 Paiement 100% sécurisé &nbsp;·&nbsp; Retour gratuit 30j
+            </div>
+        </aside>
+    </div>
+
+    {% else %}
+    <!-- Panier vide -->
+    <div class="panier-empty">
+        <div class="empty-icon">🛒</div>
+        <h2>Votre panier est vide</h2>
+        <p>Parcourez notre catalogue et ajoutez des produits à votre panier !</p>
+        <a href="{{ path('app_produit_index') }}" class="btn-shop">Découvrir les produits</a>
+    </div>
+    {% endif %}
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <p class="footer-bottom">© 2026 All4Sport – Tous droits réservés</p>
+    </div>
+</footer>
+{% endblock %}
