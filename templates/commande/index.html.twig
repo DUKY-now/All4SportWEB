@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/commande.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="commande-wrapper">
+
+    <div class="commande-header">
+        <h1 class="commande-title">📦 Mes Commandes</h1>
+        <p class="commande-subtitle">
+            {% if commandes|length > 0 %}
+                {{ commandes|length }} commande{{ commandes|length > 1 ? 's' : '' }} passée{{ commandes|length > 1 ? 's' : '' }}
+            {% else %}
+                Aucune commande pour l'instant
+            {% endif %}
+        </p>
+    </div>
+
+    {% for flash in app.flashes('success') %}
+        <div class="flash flash-success">✅ {{ flash }}</div>
+    {% endfor %}
+
+    {% if commandes|length > 0 %}
+
+        <div class="commandes-list">
+            {% for commande in commandes %}
+                {% set total = 0 %}
+                {% for composer in commande.composers %}
+                    {% set total = total + composer.sousTotal %}
+                {% endfor %}
+                {% set nbArticles = 0 %}
+                {% for composer in commande.composers %}
+                    {% set nbArticles = nbArticles + composer.quantite %}
+                {% endfor %}
+
+                <div class="commande-card">
+                    <div class="commande-card-header">
+                        <div class="commande-card-left">
+                            <div class="commande-numero">{{ commande.numeroCommande }}</div>
+                            <div class="commande-date">
+                                🗓️ {{ commande.dateCommande|date('d/m/Y à H:i') }}
+                            </div>
+                        </div>
+                        <div class="commande-card-right">
+                            <span class="statut-badge statut-{{ commande.statut }}">
+                                {% if commande.statut == 'en_attente' %}⏳ En attente
+                                {% elseif commande.statut == 'confirmee' %}✅ Confirmée
+                                {% elseif commande.statut == 'expediee' %}🚚 Expédiée
+                                {% elseif commande.statut == 'livree' %}📬 Livrée
+                                {% elseif commande.statut == 'annulee' %}❌ Annulée
+                                {% else %}{{ commande.statut }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="commande-card-body">
+                        <div class="commande-meta-grid">
+                            <div class="commande-meta-item">
+                                <span class="meta-label">🛍️ Articles</span>
+                                <span class="meta-value">{{ nbArticles }} article{{ nbArticles > 1 ? 's' : '' }}</span>
+                            </div>
+                            <div class="commande-meta-item">
+                                <span class="meta-label">💰 Total</span>
+                                <span class="meta-value meta-total">{{ total|number_format(2, ',', ' ') }} €</span>
+                            </div>
+                            <div class="commande-meta-item">
+                                <span class="meta-label">🚚 Livraison</span>
+                                <span class="meta-value">{{ commande.modeLivraison|capitalize }}</span>
+                            </div>
+                            <div class="commande-meta-item">
+                                <span class="meta-label">📍 Adresse</span>
+                                <span class="meta-value">{{ commande.adresse.ville }}, {{ commande.adresse.pays }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Aperçu des produits -->
+                        <div class="commande-produits-apercu">
+                            {% for composer in commande.composers|slice(0, 3) %}
+                                <span class="produit-chip">
+                                    {{ composer.produit.nomProduit }} × {{ composer.quantite }}
+                                </span>
+                            {% endfor %}
+                            {% if commande.composers|length > 3 %}
+                                <span class="produit-chip produit-chip-more">
+                                    +{{ commande.composers|length - 3 }} autre{{ commande.composers|length - 3 > 1 ? 's' : '' }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="commande-card-footer">
+                        <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn-voir-detail">
+                            Voir le détail →
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="commandes-empty">
+            <div class="empty-icon">📦</div>
+            <h2>Aucune commande</h2>
+            <p>Vous n'avez pas encore passé de commande.<br>Découvrez notre catalogue et faites-vous plaisir !</p>
+            <a href="{{ path('app_produit_index') }}" class="btn-shop">🛍️ Voir les produits</a>
+        </div>
+    {% endif %}
+
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <p class="footer-bottom">© 2026 All4Sport – Tous droits réservés</p>
+    </div>
+</footer>
+{% endblock %}
+
