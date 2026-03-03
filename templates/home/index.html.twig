@@ -15,6 +15,8 @@
         <ul class="nav-menu">
             <li><a href="{{ path('app_home') }}" class="nav-link">Accueil</a></li>
             <li><a href="{{ path('app_produit_index') }}" class="nav-link">Produits</a></li>
+            <li><a href="{{ path('app_home') }}" class="nav-link">Panier</a></li>
+            {# <li><a href="{{ path('app_gestion') }}" class="nav-link">gestion produit</a></li> #}
             <li><a href="#" class="nav-link">À propos</a></li>
             {% if app.user %}
                 <li><a href="{{ path('app_account') }}" class="nav-link">Mon compte</a></li>
