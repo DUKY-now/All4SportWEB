@@ -23,8 +23,8 @@
             </div>
 
             <ul class="sidebar-menu">
-                <li><a href="#" class="active"><span class="sidebar-menu-icon">📋</span> Tableau de bord</a></li>
-                <li><a href="#"><span class="sidebar-menu-icon">🛒</span> Mes commandes ({{ app.user.commandes|length }})</a></li>
+                <li><a href="{{ path('app_account') }}" class="active"><span class="sidebar-menu-icon">📋</span> Tableau de bord</a></li>
+                <li><a href="{{ path('app_commande_index') }}"><span class="sidebar-menu-icon">🛒</span> Mes commandes ({{ app.user.commandes|length }})</a></li>
                 <li><a href="#"><span class="sidebar-menu-icon">✏️</span> Modifier mon profil</a></li>
                 <li><a href="{{ path('app_logout') }}"><span class="sidebar-menu-icon">🔒</span> Déconnexion</a></li>
             </ul>

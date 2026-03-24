@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block body %}
+<<<<<<< HEAD
 {# <nav class="navbar">
     <div class="nav-container">
         <a href="{{ path('app_home') }}" class="logo">🏃 All4Sport</a>
@@ -35,10 +36,12 @@
     </div>
 </nav> #}
 
+=======
+>>>>>>> 56231ba6937715acc3f268c6db008390345a9d31
 <div class="panier-wrapper">
     <div class="panier-header">
         <h1 class="panier-title">🛒 Mon Panier</h1>
-        <p class="panier-subtitle">
+        <p class="panier-subtitle" id="panier-subtitle">
             {% if count > 0 %}
                 {{ count }} article{{ count > 1 ? 's' : '' }} dans votre panier
             {% else %}
@@ -46,6 +49,8 @@
             {% endif %}
         </p>
     </div>
+
+    <div id="toast-container"></div>
 
     {% for flash in app.flashes('success') %}
         <div class="flash flash-success">✅ {{ flash }}</div>
@@ -61,12 +66,11 @@
     {% endfor %}
 
     {% if items|length > 0 %}
-    <div class="panier-grid">
+    <div class="panier-grid" id="panier-grid">
 
-        <!-- Liste des articles -->
-        <div class="panier-items">
+        <div class="panier-items" id="panier-items">
             {% for item in items %}
-            <div class="panier-item">
+            <div class="panier-item" id="item-{{ item.produit.id }}" data-produit-id="{{ item.produit.id }}" data-prix="{{ item.produit.prixVente }}">
                 <div class="item-image">
                     {% set icons = {
                         'football': '⚽', 'basketball': '🏀', 'tennis': '🎾',
@@ -82,9 +86,7 @@
 
                 <div class="item-info">
                     <div class="item-category">
-                        {% if item.produit.stocks|length > 0 %}
-                            {{ item.produit.stocks[0].rayon.nomRayon }}
-                        {% endif %}
+                        {% if item.produit.stocks|length > 0 %}{{ item.produit.stocks[0].rayon.nomRayon }}{% endif %}
                     </div>
                     <h3 class="item-name">{{ item.produit.nomProduit }}</h3>
                     <p class="item-desc">
@@ -95,28 +97,25 @@
 
                 <div class="item-controls">
                     <div class="qty-control">
-                        <form action="{{ path('app_panier_decrease', {'id': item.produit.id}) }}" method="POST">
-                            <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
-                            <button type="submit" class="qty-btn">−</button>
-                        </form>
-                        <span class="qty-value">{{ item.quantite }}</span>
-                        <form action="{{ path('app_panier_add', {'id': item.produit.id}) }}" method="POST">
-                            <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
-                            <button type="submit" class="qty-btn">+</button>
-                        </form>
+                        <button type="button" class="qty-btn btn-decrease"
+                                data-url="{{ path('app_panier_decrease', {'id': item.produit.id}) }}"
+                                data-token="{{ csrf_token('panier') }}">−</button>
+                        <span class="qty-value" id="qty-{{ item.produit.id }}">{{ item.quantite }}</span>
+                        <button type="button" class="qty-btn btn-increase"
+                                data-url="{{ path('app_panier_increase', {'id': item.produit.id}) }}"
+                                data-token="{{ csrf_token('panier') }}">+</button>
                     </div>
 
-                    <div class="item-sous-total">{{ item.sousTotal }} €</div>
+                    <div class="item-sous-total" id="sous-total-{{ item.produit.id }}">{{ item.sousTotal }} €</div>
 
-                    <form action="{{ path('app_panier_remove', {'id': item.produit.id}) }}" method="POST">
-                        <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
-                        <button type="submit" class="btn-remove" title="Supprimer">🗑️</button>
-                    </form>
+                    <button type="button" class="btn-remove btn-remove-ajax"
+                            data-url="{{ path('app_panier_remove', {'id': item.produit.id}) }}"
+                            data-token="{{ csrf_token('panier') }}"
+                            title="Supprimer">🗑️</button>
                 </div>
             </div>
             {% endfor %}
 
-            <!-- Vider le panier -->
             <div class="panier-actions-bottom">
                 <a href="{{ path('app_produit_index') }}" class="btn-continue">← Continuer mes achats</a>
                 <form action="{{ path('app_panier_clear') }}" method="POST">
@@ -126,15 +125,14 @@
             </div>
         </div>
 
-        <!-- Récapitulatif -->
         <aside class="panier-summary">
             <h2 class="summary-title">Récapitulatif</h2>
 
-            <div class="summary-lines">
+            <div class="summary-lines" id="summary-lines">
                 {% for item in items %}
-                <div class="summary-line">
-                    <span>{{ item.produit.nomProduit }} × {{ item.quantite }}</span>
-                    <span>{{ item.sousTotal }} €</span>
+                <div class="summary-line" id="summary-line-{{ item.produit.id }}">
+                    <span class="summary-line-label">{{ item.produit.nomProduit }} × <span class="summary-qty">{{ item.quantite }}</span></span>
+                    <span class="summary-line-price">{{ item.sousTotal }} €</span>
                 </div>
                 {% endfor %}
             </div>
@@ -143,7 +141,7 @@
 
             <div class="summary-total">
                 <span>Total</span>
-                <span class="total-amount">{{ total }} €</span>
+                <span class="total-amount" id="total-amount">{{ total }} €</span>
             </div>
 
             <div class="summary-delivery">
@@ -155,11 +153,6 @@
                 <a href="{{ path('app_panier_checkout') }}" class="btn-checkout">
                     Passer la commande →
                 </a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn-checkout btn-checkout-login">
-                    🔒 Se connecter pour commander
-                </a>
-                <p class="summary-login-hint">Vous devez être connecté pour valider votre commande.</p>
             {% endif %}
 
             <div class="summary-secure">
@@ -169,8 +162,7 @@
     </div>
 
     {% else %}
-    <!-- Panier vide -->
-    <div class="panier-empty">
+    <div class="panier-empty" id="panier-empty">
         <div class="empty-icon">🛒</div>
         <h2>Votre panier est vide</h2>
         <p>Parcourez notre catalogue et ajoutez des produits à votre panier !</p>
@@ -184,4 +176,130 @@
         <p class="footer-bottom">© 2026 All4Sport – Tous droits réservés</p>
     </div>
 </footer>
+
+<script>
+// ===== PANIER AJAX =====
+
+function showToast(msg, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = msg;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('toast-visible'));
+    setTimeout(() => {
+        toast.classList.remove('toast-visible');
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+}
+
+function updateGlobalCount(count) {
+    // Met à jour le sous-titre
+    const subtitle = document.getElementById('panier-subtitle');
+    if (subtitle) {
+        subtitle.textContent = count > 0
+            ? count + ' article' + (count > 1 ? 's' : '') + ' dans votre panier'
+            : 'Votre panier est vide';
+    }
+}
+
+function updateTotal(total) {
+    const el = document.getElementById('total-amount');
+    if (el) el.textContent = parseFloat(total).toFixed(2) + ' €';
+}
+
+function removeItemFromDOM(produitId) {
+    const item = document.getElementById('item-' + produitId);
+    if (item) {
+        item.style.transition = 'opacity 0.3s, transform 0.3s';
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(30px)';
+        setTimeout(() => item.remove(), 300);
+    }
+    const summaryLine = document.getElementById('summary-line-' + produitId);
+    if (summaryLine) summaryLine.remove();
+}
+
+async function panierAjax(url, token, extraData = {}) {
+    const body = new URLSearchParams({ _token: token, ...extraData });
+    const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+    });
+    return resp.json();
+}
+
+// Boutons + (augmenter)
+document.querySelectorAll('.btn-increase').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        const row = btn.closest('.panier-item');
+        const produitId = row.dataset.produitId;
+        try {
+            const data = await panierAjax(btn.dataset.url, btn.dataset.token);
+            if (data.success) {
+                document.getElementById('qty-' + produitId).textContent = data.quantite;
+                document.getElementById('sous-total-' + produitId).textContent = parseFloat(data.sousTotal).toFixed(2) + ' €';
+                // Mise à jour recap
+                const summaryQty = document.querySelector('#summary-line-' + produitId + ' .summary-qty');
+                const summaryPrice = document.querySelector('#summary-line-' + produitId + ' .summary-line-price');
+                if (summaryQty) summaryQty.textContent = data.quantite;
+                if (summaryPrice) summaryPrice.textContent = parseFloat(data.sousTotal).toFixed(2) + ' €';
+                updateTotal(data.total);
+                updateGlobalCount(data.count);
+            }
+        } catch(e) { showToast('Erreur réseau', 'danger'); }
+        btn.disabled = false;
+    });
+});
+
+// Boutons − (diminuer)
+document.querySelectorAll('.btn-decrease').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        const row = btn.closest('.panier-item');
+        const produitId = row.dataset.produitId;
+        try {
+            const data = await panierAjax(btn.dataset.url, btn.dataset.token);
+            if (data.success) {
+                if (data.removed) {
+                    removeItemFromDOM(produitId);
+                    showToast('Article retiré du panier', 'info');
+                } else {
+                    document.getElementById('qty-' + produitId).textContent = data.quantite;
+                    document.getElementById('sous-total-' + produitId).textContent = parseFloat(data.sousTotal).toFixed(2) + ' €';
+                    const summaryQty = document.querySelector('#summary-line-' + produitId + ' .summary-qty');
+                    const summaryPrice = document.querySelector('#summary-line-' + produitId + ' .summary-line-price');
+                    if (summaryQty) summaryQty.textContent = data.quantite;
+                    if (summaryPrice) summaryPrice.textContent = parseFloat(data.sousTotal).toFixed(2) + ' €';
+                }
+                updateTotal(data.total);
+                updateGlobalCount(data.count);
+            }
+        } catch(e) { showToast('Erreur réseau', 'danger'); }
+        btn.disabled = false;
+    });
+});
+
+// Boutons 🗑️ (supprimer)
+document.querySelectorAll('.btn-remove-ajax').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const row = btn.closest('.panier-item');
+        const produitId = row.dataset.produitId;
+        try {
+            const data = await panierAjax(btn.dataset.url, btn.dataset.token);
+            if (data.success) {
+                removeItemFromDOM(produitId);
+                updateTotal(data.total);
+                updateGlobalCount(data.count);
+                showToast('Article retiré du panier', 'info');
+                if (data.count === 0) {
+                    setTimeout(() => location.reload(), 400);
+                }
+            }
+        } catch(e) { showToast('Erreur réseau', 'danger'); }
+    });
+});
+</script>
 {% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande {{ commande.numeroCommande }} - All4Sport{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/commande.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="commande-wrapper">
+
+    <!-- Breadcrumb -->
+    <div class="commande-breadcrumb">
+        <a href="{{ path('app_commande_index') }}">📦 Mes commandes</a>
+        <span>›</span>
+        <span>{{ commande.numeroCommande }}</span>
+    </div>
+
+    <!-- Header -->
+    <div class="commande-header">
+        <div class="commande-header-left">
+            <h1 class="commande-title">Commande {{ commande.numeroCommande }}</h1>
+            <p class="commande-subtitle">Passée le {{ commande.dateCommande|date('d/m/Y à H:i') }}</p>
+        </div>
+        <span class="statut-badge statut-{{ commande.statut }} statut-large">
+            {% if commande.statut == 'en_attente' %}⏳ En attente
+            {% elseif commande.statut == 'confirmee' %}✅ Confirmée
+            {% elseif commande.statut == 'expediee' %}🚚 Expédiée
+            {% elseif commande.statut == 'livree' %}📬 Livrée
+            {% elseif commande.statut == 'annulee' %}❌ Annulée
+            {% else %}{{ commande.statut }}
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="commande-detail-grid">
+
+        <!-- Colonne gauche : articles -->
+        <div class="commande-detail-left">
+
+            <div class="detail-section">
+                <h2 class="detail-section-title">🛍️ Articles commandés</h2>
+
+                {% for composer in commande.composers %}
+                    {% set icons = {
+                        'football': '⚽', 'basketball': '🏀', 'tennis': '🎾',
+                        'running': '👟', 'yoga': '🧘', 'dumbbells': '🏋️',
+                        'swim': '🏊', 'kettlebell': '💪', 'watch': '⌚', 'resistance': '🎯'
+                    } %}
+                    {% set icon = '🏆' %}
+                    {% for key, emoji in icons %}
+                        {% if key in composer.produit.imageUrl|lower %}{% set icon = emoji %}{% endif %}
+                    {% endfor %}
+
+                    <div class="detail-article">
+                        <div class="detail-article-image">{{ icon }}</div>
+                        <div class="detail-article-info">
+                            <div class="detail-article-name">{{ composer.produit.nomProduit }}</div>
+                            {% if composer.produit.stocks|length > 0 %}
+                                <div class="detail-article-category">{{ composer.produit.stocks[0].rayon.nomRayon }}</div>
+                            {% endif %}
+                            <div class="detail-article-prix-unit">{{ composer.prixUnitaire }} € / unité</div>
+                        </div>
+                        <div class="detail-article-right">
+                            <div class="detail-article-qty">× {{ composer.quantite }}</div>
+                            <div class="detail-article-sous-total">{{ composer.sousTotal }} €</div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Total -->
+                <div class="detail-total-row">
+                    <div class="detail-total-label">
+                        <span>{{ commande.composers|length }} produit{{ commande.composers|length > 1 ? 's' : '' }}</span>
+                        <span class="detail-total-livraison">Livraison incluse</span>
+                    </div>
+                    <div class="detail-total-amount">{{ total|number_format(2, ',', ' ') }} €</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Colonne droite : infos commande -->
+        <aside class="commande-detail-right">
+
+            <div class="detail-info-card">
+                <h2 class="detail-section-title">📋 Récapitulatif</h2>
+
+                <div class="detail-info-line">
+                    <span class="detail-info-label">Numéro</span>
+                    <span class="detail-info-value">{{ commande.numeroCommande }}</span>
+                </div>
+                <div class="detail-info-line">
+                    <span class="detail-info-label">Date</span>
+                    <span class="detail-info-value">{{ commande.dateCommande|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-info-line">
+                    <span class="detail-info-label">Statut</span>
+                    <span class="statut-badge statut-{{ commande.statut }}">
+                        {% if commande.statut == 'en_attente' %}⏳ En attente
+                        {% elseif commande.statut == 'confirmee' %}✅ Confirmée
+                        {% elseif commande.statut == 'expediee' %}🚚 Expédiée
+                        {% elseif commande.statut == 'livree' %}📬 Livrée
+                        {% elseif commande.statut == 'annulee' %}❌ Annulée
+                        {% else %}{{ commande.statut }}{% endif %}
+                    </span>
+                </div>
+                <div class="detail-info-separator"></div>
+                <div class="detail-info-line">
+                    <span class="detail-info-label">🚚 Livraison</span>
+                    <span class="detail-info-value">{{ commande.modeLivraison|capitalize }}</span>
+                </div>
+                <div class="detail-info-line">
+                    <span class="detail-info-label">Articles</span>
+                    <span class="detail-info-value">
+                        {% set nbArticles = 0 %}
+                        {% for c in commande.composers %}{% set nbArticles = nbArticles + c.quantite %}{% endfor %}
+                        {{ nbArticles }}
+                    </span>
+                </div>
+                <div class="detail-info-separator"></div>
+                <div class="detail-info-line detail-info-total">
+                    <span class="detail-info-label">Total</span>
+                    <span class="detail-info-value detail-grand-total">{{ total|number_format(2, ',', ' ') }} €</span>
+                </div>
+            </div>
+
+            <div class="detail-info-card">
+                <h2 class="detail-section-title">📍 Livraison à</h2>
+                <div class="detail-address">
+                    <strong>{{ commande.client.prenom }} {{ commande.client.nom }}</strong><br>
+                    {{ commande.adresse.rue }}<br>
+                    {{ commande.adresse.codePostal }} {{ commande.adresse.ville }}<br>
+                    {{ commande.adresse.pays }}
+                </div>
+            </div>
+
+            <a href="{{ path('app_commande_index') }}" class="btn-retour-commandes">
+                ← Retour à mes commandes
+            </a>
+
+        </aside>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <p class="footer-bottom">© 2026 All4Sport – Tous droits réservés</p>
+    </div>
+</footer>
+{% endblock %}
+

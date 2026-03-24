@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}All4Sport{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('styles/base.css') }}">
@@ -47,6 +47,82 @@
 
     </head>
     <body>
+
+        {# ===== NAVBAR GLOBALE ===== #}
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="{{ path('app_home') }}" class="logo">🏃 All4Sport</a>
+
+                <button class="navbar-burger" id="navBurger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li>
+                        <a href="{{ path('app_home') }}"
+                           class="nav-link {% if app.request.get('_route') == 'app_home' %}active{% endif %}">
+                            🏠 Accueil
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_produit_index') }}"
+                           class="nav-link {% if app.request.get('_route') starts with 'app_produit' %}active{% endif %}">
+                            🛍️ Produits
+                        </a>
+                    </li>
+                    {% if app.user %}
+                        <li>
+                            <a href="{{ path('app_account') }}"
+                               class="nav-link {% if app.request.get('_route') starts with 'app_account' %}active{% endif %}">
+                                👤 Mon compte
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_commande_index') }}"
+                               class="nav-link {% if app.request.get('_route') starts with 'app_commande' %}active{% endif %}">
+                                📦 Commandes
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_panier_index') }}"
+                               class="nav-link {% if app.request.get('_route') starts with 'app_panier' %}active{% endif %}">
+                                🛒 Panier
+                            </a>
+                        </li>
+                        {% if app.user and 'ROLE_OPERATEUR' in app.user.roles %}
+                            <li>
+                                <a href="{{ path('app_gestion_commande') }}"
+                                   class="nav-link {% if app.request.get('_route') == 'app_gestion_commande' %}active{% endif %}">
+                                    🛠️ Gestion Commande
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li><a href="{{ path('app_logout') }}" class="btn-nav btn-outline">Déconnexion</a></li>
+                    {% else %}
+                        <li>
+                            <a href="{{ path('app_login') }}"
+                               class="btn-nav btn-outline {% if app.request.get('_route') == 'app_login' %}active{% endif %}">
+                                Connexion
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_register') }}"
+                               class="btn-nav {% if app.request.get('_route') == 'app_register' %}active{% endif %}">
+                                Inscription
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
         {% block body %}{% endblock %}
+
+        <script>
+            document.getElementById('navBurger')?.addEventListener('click', function() {
+                document.getElementById('navMenu').classList.toggle('nav-menu-open');
+                this.classList.toggle('is-active');
+            });
+        </script>
     </body>
 </html>
