@@ -18,5 +18,12 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+<<<<<<< HEAD
 src/DataFixtures/AppFixtures.php
 .env
+=======
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+>>>>>>> defd776d958b68e1891d504792ccf795bbfa9501
