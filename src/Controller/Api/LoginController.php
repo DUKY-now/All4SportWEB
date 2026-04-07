@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Client;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Service\JWTService;
 
 /**
  * @Route("/api", name="api_")
@@ -17,11 +18,13 @@ class LoginController extends AbstractController
 {
     private $entityManager;
     private $passwordHasher;
+    private $jwtService;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, JWTService $jwtService)
     {
         $this->entityManager = $entityManager;
         $this->passwordHasher = $passwordHasher;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -44,9 +47,22 @@ class LoginController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Identifiants incorrects.'], 401);
         }
 
-        // Générer un token ou une réponse de succès
-        $token = base64_encode(random_bytes(30)); // Exemple de token simple
+        // Générer un JWT token
+        $token = $this->jwtService->generateToken(
+            $client->getId(),
+            $client->getEmail(),
+            ['ROLE_CLIENT']
+        );
 
-        return new JsonResponse(['success' => true, 'token' => $token]);
+        return new JsonResponse([
+            'success' => true,
+            'token' => $token,
+            'user' => [
+                'id' => $client->getId(),
+                'email' => $client->getEmail(),
+                'nom' => $client->getNom(),
+                'prenom' => $client->getPrenom(),
+            ]
+        ]);
     }
 }
