@@ -24,24 +24,31 @@ Théo:
 le mcd a été réalisé grace au site MOCODO. Dont voici le lien:
 https://www.mocodo.net
 
+"SITUE, 0N RAYON, 11 STOCK
+STOCK: id, lieu_stockage, quantite_disponible
+STOCKE, 0N PRODUIT, 11 STOCK
+COMPOSER: quantite, prix_unitaire, sous_total
+COMPOSE, 0N COMMANDE, 11 COMPOSER
+COMMANDE: id, numero_commande, statut, mode_livraison, date_commande
+LIVREE_A, 0N COMMANDE, 1N ADRESSE
+
+RAYON: id, nom_rayon, description
+:
+PRODUIT: id, nom_produit, description, prix_vente, image_url
+CONCERNE_CMD, 0N PRODUIT, 11 COMPOSER
+:
+PASSE, 0N CLIENT, 11 COMMANDE
+ADRESSE: id, rue, code_postal, ville, pays, complement
 
 :
 :
+CONCERNE_PANIER, 0N PRODUIT, 11 LIGNE_PANIER
+LIGNE_PANIER: id, quantite
+CONTIENT_PANIER, 0N CLIENT, 11 LIGNE_PANIER
+CLIENT: id, role, nom, prenom, email, mot_de_passe, telephone, date_inscription
+HABITE, 0N CLIENT, 1N ADRESSE"
+<img width="865" height="408" alt="MCD" src="https://github.com/user-attachments/assets/146cd062-1cb8-4b99-8278-adaeb1de773d" />
 
-ADRESSE: id_adresse, rue, code_postal, ville, pays, complement
-LIVRER_A, 0N COMMANDE, 1N ADRESSE
-COMMANDE: id_commande, numero_commande, statut, mode_livraison
-COMPOSER, 0N COMMANDE, 0N PRODUIT: quantite, prix_unitaire, sous_total
-PRODUIT: id_produit, nom_produit, description, prix_vente, image_url
-ETRE_STOCKE, 1N PRODUIT, 0N STOCK
-
-:
-CLIENT: id_client, role,nom, prenom, email, mot_de_passe, telephone, date_inscription
-PASSER, 1N CLIENT, 0N COMMANDE: 
-RAYON: id_rayon, nom_rayon, description
-POSSEDER, 11 RAYON, 1N PRODUIT
-STOCK: id_stock, lieu_stockage, quantite_disponible
-<img width="1170" height="722" alt="image" src="https://github.com/user-attachments/assets/0e0a7b0c-c927-4901-917b-ad59cb8f3591" />
 
 
 Bootstrap est un site qui peut nous aider a donner du style a nos pages web. Il peut gerer le responsive et peut etre utilisé pour notre formulaire.
