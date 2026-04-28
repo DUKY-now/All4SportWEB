@@ -20,6 +20,11 @@ security:
             stateless: true
             security: false
 
+        api_public:
+            pattern: ^/api/(produits|stocks)
+            stateless: true
+            security: false
+
         main:
             pattern: ^/
             lazy: true
@@ -38,6 +43,8 @@ security:
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/client/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/produits, roles: PUBLIC_ACCESS }
+        - { path: ^/api/stocks, roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: [ROLE_USER, ROLE_OPERATEUR] }
 
 when@test:

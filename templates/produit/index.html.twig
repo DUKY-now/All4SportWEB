@@ -90,7 +90,9 @@
 
                         {% if produit.stocks|length > 0 %}
                             {% set stock = produit.stocks[0] %}
-                            {% if stock.quantiteDisponible < 20 %}
+                            {% if stock.quantiteDisponible == 0 %}
+                                <div class="product-badge out-of-stock">Rupture de stock</div>
+                            {% elseif stock.quantiteDisponible < 20 %}
                                 <div class="product-badge">Stock limité!</div>
                             {% endif %}
                         {% endif %}
