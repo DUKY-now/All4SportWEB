@@ -33,4 +33,12 @@ class GestionCommandeController extends AbstractController
         }
         return $this->redirectToRoute('app_gestion_commande');
     }
+
+    #[Route('/gestion-commande/details/{id}', name: 'app_gestion_commande_details', methods: ['GET'])]
+    public function details(Commande $commande): Response
+    {
+        return $this->render('gestion_commande/details.html.twig', [
+            'commande' => $commande,
+        ]);
+    }
 }
